@@ -1,0 +1,20 @@
+* {
+  --canvasSizeMult: 4;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+canvas {
+  background-color: black;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  width: calc(320px * var(--canvasSizeMult));
+  height: calc(180px * var(--canvasSizeMult));
+}
