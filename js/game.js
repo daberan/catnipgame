@@ -1,6 +1,5 @@
 let canvas;
-let ctx;
-let character = new Image();
+let world;
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -8,9 +7,7 @@ function init() {
   canvas.width = 320;
   canvas.height = 180;
 
-  ctx = canvas.getContext(`2d`);
+  world = new World(canvas);
 
-  character.src = "../img/character/idle/character_idle1.png";
-
-  ctx.drawImage(character, 20, 20, 32, 32);
+  console.log("My character is", world.character);
 }
