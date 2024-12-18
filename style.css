@@ -12,7 +12,7 @@ body {
 }
 
 canvas {
-  background-color: black;
+  background-color: rgb(40, 40, 40);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   width: calc(320px * var(--canvasSizeMult));
