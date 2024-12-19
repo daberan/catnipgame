@@ -1,11 +1,13 @@
 class MovableObject {
-  x = 45;
+  x = 0;
   y = 100;
   img;
   height = 32;
   width = 32;
-
+  rndmSpeed = Math.floor(Math.random() * 7) + 6;
+  speed = 500;
   imageCache = {};
+  parallaxFactor = 10;
 
   loadImage(path) {
     this.img = new Image();
@@ -20,9 +22,23 @@ class MovableObject {
     });
   }
 
-  moveRight() {
-    console.log("Moving Right");
+  // animate() {
+  //   this.moveLeft();
+  // }
+
+  // moveRight() {
+  //   console.log("Moving Right");
+  // }
+
+  moveLeft(speed) {
+    setInterval(() => {
+      this.x -= 1;
+    }, speed);
   }
 
-  moveLeft() {}
+  // moveBackgroundLayer(parallaxFactor) {
+  //   setInterval(() => {
+  //     this.x -= 1;
+  //   }, 50 * parallaxFactor);
+  // }
 }
