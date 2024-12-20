@@ -72,6 +72,16 @@ class World {
     });
     this.ctx.translate(-closeMountainsMove, 0);
 
+    // Draw close ground (moves every 1.5 pixels)
+    let closeGroundMove = Math.floor(this.camera_x / 3);
+    this.ctx.translate(closeGroundMove, 0);
+    this.level.backgroundObjects.forEach((bg) => {
+      if (bg.img.src.includes("ground2.png")) {
+        this.addToMap(bg);
+      }
+    });
+    this.ctx.translate(-closeGroundMove, 0);
+
     // Draw ground and other objects (full camera movement)
     this.ctx.translate(this.camera_x, 0);
     this.level.backgroundObjects.forEach((bg) => {
@@ -79,9 +89,10 @@ class World {
         this.addToMap(bg);
       }
     });
-    this.addToMap(this.character);
+
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.level.clouds);
+    this.addToMap(this.character);
     this.ctx.translate(-this.camera_x, 0);
 
     requestAnimationFrame(() => {

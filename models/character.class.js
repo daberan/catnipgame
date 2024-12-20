@@ -5,6 +5,7 @@ class Character extends MovableObject {
   currentImage = 0;
   currentSequence = this.sequence_idle;
   world;
+  y = 100;
 
   constructor() {
     super().loadImage("./img/character/idle/character_idle1.png");

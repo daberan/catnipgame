@@ -1,10 +1,12 @@
-class Blob extends MovableObject {
-  sequence_idle = ["./img/enemies/blob/idle/blobIdle1.png", "./img/enemies/blob/idle/blobIdle2.png", "./img/enemies/blob/idle/blobIdle3.png", "./img/enemies/blob/idle/blobIdle4.png", "./img/enemies/blob/idle/blobIdle5.png", "./img/enemies/blob/idle/blobIdle6.png"];
+class Blobmaster extends MovableObject {
+  sequence_idle = ["./img/enemies/blobmaster/blobmaster1.png", "./img/enemies/blobmaster/blobmaster2.png", "./img/enemies/blobmaster/blobmaster3.png", "./img/enemies/blobmaster/blobmaster4.png", "./img/enemies/blobmaster/blobmaster5.png", "./img/enemies/blobmaster/blobmaster6.png"];
   currentImage = Math.floor(Math.random() * 6);
-  y = 100;
+  height = 64;
+  width = 64;
+  y = 67;
 
   constructor() {
-    super().loadImage("./img/enemies/blob/idle/blobIdle1.png");
+    super().loadImage("./img/enemies/blobmaster/blobmaster1.png");
     this.loadImages(this.sequence_idle);
     this.speed = Math.floor(Math.random() * 7) + 6;
     this.x = Math.round(100 + Math.random() * 150);
