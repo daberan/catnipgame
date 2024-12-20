@@ -45,7 +45,7 @@ class Character extends MovableObject {
 
   walkRight() {
     setInterval(() => {
-      if (this.world.keyboard.RIGHT) {
+      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.x += 1;
       }
       this.world.camera_x = -this.x + 100;
@@ -54,7 +54,7 @@ class Character extends MovableObject {
 
   walkLeft() {
     setInterval(() => {
-      if (this.world.keyboard.LEFT) {
+      if (this.world.keyboard.LEFT && this.x > 0) {
         this.x -= 1;
       }
       this.world.camera_x = -this.x + 100;
