@@ -5,7 +5,9 @@ class Character extends MovableObject {
   currentImage = 0;
   currentSequence = this.sequence_idle;
   world;
-  y = 100;
+  y = 0;
+  isJumping = this.isJumping;
+  character_jump_sound = new Audio("./audio/character_jump.mp3");
 
   constructor() {
     super().loadImage("./img/character/idle/character_idle1.png");
@@ -13,13 +15,25 @@ class Character extends MovableObject {
     this.loadImages(this.sequence_rolling_right);
     this.loadImages(this.sequence_rolling_left);
 
+    this.applyGravity();
     this.animate();
     this.walkRight();
     this.walkLeft();
   }
 
   animate() {
+    //jump
     setInterval(() => {
+      if (this.world.keyboard.UP && !this.isAboveGround()) {
+        this.jump();
+        this.character_jump_sound.play();
+      }
+    }, 10);
+
+    // Picks the right animation sequence
+    setInterval(() => {
+      console.log(this.world.character.x);
+
       this.sequencePicker();
     }, 10);
 
@@ -71,6 +85,4 @@ class Character extends MovableObject {
       this.currentSequence = this.sequence_idle;
     }
   }
-
-  jump() {}
 }

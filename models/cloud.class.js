@@ -1,14 +1,54 @@
 class Cloud extends MovableObject {
   constructor() {
-    super().loadImage("./img/environment/clouds/cloud1.png");
+    super();
 
-    this.x = Math.round(0 + Math.random() * 280);
-    this.y = Math.round(-15 + Math.random() * 10);
+    this.cloudTypes = [
+      {
+        image: "./img/environment/clouds/cloud1.png",
+        width: 14,
+        height: 27,
+        speedMin: 14,
+        speedMax: 20,
+        yPosition: 20,
+      },
+      {
+        image: "./img/environment/clouds/cloud2.png",
+        width: 51,
+        height: 167,
+        speedMin: 8,
+        speedMax: 12,
+        yPosition: -40,
+      },
+      {
+        image: "./img/environment/clouds/cloud3.png",
+        width: 12,
+        height: 140,
+        speedMin: 16,
+        speedMax: 20,
+        yPosition: 10,
+      },
+      {
+        image: "./img/environment/clouds/cloud4.png",
+        width: 19,
+        height: 113,
+        speedMin: 12,
+        speedMax: 18,
+        yPosition: 10,
+      },
+    ];
 
-    this.speed = Math.floor(Math.random() * 7) + 6;
+    const selectedCloud = this.cloudTypes[Math.floor(Math.random() * this.cloudTypes.length)];
+
+    this.loadImage(selectedCloud.image);
+
+    this.width = selectedCloud.width;
+    this.height = selectedCloud.height;
+    this.speed = Math.floor(Math.random() * (selectedCloud.speedMax - selectedCloud.speedMin + 1)) + selectedCloud.speedMin;
+
+    this.x = Math.round(0 + Math.random() * 1000);
+    this.y = Math.round(selectedCloud.yPosition + Math.random() * 30);
+
     this.animate();
-    this.height = 103;
-    this.width = 36;
   }
 
   animate() {

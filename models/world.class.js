@@ -1,5 +1,6 @@
 class World {
   character = new Character();
+
   level = level1;
   canvas;
   ctx;
@@ -16,13 +17,16 @@ class World {
 
   setWorld() {
     this.character.world = this;
+    // Add this line to set world reference for all enemies
+    this.level.enemies.forEach((enemy) => {
+      enemy.world = this;
+    });
   }
 
-  // In world.class.js
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Draw sky layers (moves every 5 pixels)
+    // Sky (stationary)
     let skyMove = Math.floor(this.camera_x / 0);
     this.ctx.translate(skyMove, 0);
     this.level.backgroundObjects.forEach((bg) => {
@@ -32,7 +36,7 @@ class World {
     });
     this.ctx.translate(-skyMove, 0);
 
-    // Draw far clouds (moves every 4 pixels)
+    // Far clouds (slowest)
     let farCloudsMove = Math.floor(this.camera_x / 1000);
     this.ctx.translate(farCloudsMove, 0);
     this.level.backgroundObjects.forEach((bg) => {
@@ -42,7 +46,7 @@ class World {
     });
     this.ctx.translate(-farCloudsMove, 0);
 
-    // Draw close clouds (moves every 3 pixels)
+    // Close clouds
     let closeCloudsMove = Math.floor(this.camera_x / 200);
     this.ctx.translate(closeCloudsMove, 0);
     this.level.backgroundObjects.forEach((bg) => {
@@ -52,7 +56,7 @@ class World {
     });
     this.ctx.translate(-closeCloudsMove, 0);
 
-    // Draw far mountains (moves every 2 pixels)
+    // Far mountains
     let farMountainsMove = Math.floor(this.camera_x / 20);
     this.ctx.translate(farMountainsMove, 0);
     this.level.backgroundObjects.forEach((bg) => {
@@ -62,7 +66,7 @@ class World {
     });
     this.ctx.translate(-farMountainsMove, 0);
 
-    // Draw close mountains (moves every 1.5 pixels)
+    // Close mountains
     let closeMountainsMove = Math.floor(this.camera_x / 6);
     this.ctx.translate(closeMountainsMove, 0);
     this.level.backgroundObjects.forEach((bg) => {
@@ -72,27 +76,39 @@ class World {
     });
     this.ctx.translate(-closeMountainsMove, 0);
 
-    // Draw close ground (moves every 1.5 pixels)
+    // Close ground
     let closeGroundMove = Math.floor(this.camera_x / 3);
     this.ctx.translate(closeGroundMove, 0);
     this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.includes("ground2.png")) {
+      if (bg.img.src.endsWith("/ground2.png")) {
         this.addToMap(bg);
       }
     });
     this.ctx.translate(-closeGroundMove, 0);
 
-    // Draw ground and other objects (full camera movement)
+    // Main ground and game objects (full camera movement)
     this.ctx.translate(this.camera_x, 0);
     this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.includes("ground1.png")) {
+      if (bg.img.src.endsWith("/ground_new.png")) {
         this.addToMap(bg);
       }
     });
 
     this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.level.clouds);
     this.addToMap(this.character);
+
+    // foreground1
+    let foreGroundMove = Math.floor(this.camera_x / 1);
+    this.ctx.translate(foreGroundMove, 0);
+    this.level.backgroundObjects.forEach((bg) => {
+      if (bg.img.src.endsWith("/foreground2.png")) {
+        this.addToMap(bg);
+      }
+    });
+    this.ctx.translate(-foreGroundMove, 0);
+
+    this.addObjectsToMap(this.level.clouds);
+
     this.ctx.translate(-this.camera_x, 0);
 
     requestAnimationFrame(() => {

@@ -7,7 +7,9 @@ class MovableObject {
   rndmSpeed = Math.floor(Math.random() * 7) + 6;
   speed = 500;
   imageCache = {};
-  parallaxFactor = 10;
+  speedY = 0;
+  acceleration = 2;
+  isJumping = false;
 
   loadImage(path) {
     this.img = new Image();
@@ -22,23 +24,37 @@ class MovableObject {
     });
   }
 
-  // animate() {
-  //   this.moveLeft();
-  // }
-
-  // moveRight() {
-  //   console.log("Moving Right");
-  // }
-
   moveLeft(speed) {
     setInterval(() => {
       this.x -= 1;
     }, speed);
   }
 
-  // moveBackgroundLayer(parallaxFactor) {
-  //   setInterval(() => {
-  //     this.x -= 1;
-  //   }, 50 * parallaxFactor);
-  // }
+  applyGravity() {
+    setInterval(() => {
+      // Nur Gravitation anwenden wenn in der Luft ODER positive speedY (beim Springen)
+      if (this.isAboveGround() || this.speedY > 0) {
+        let newY = this.y - this.speedY;
+
+        if (newY > 100) {
+          this.y = 100;
+          this.speedY = 0;
+        } else {
+          this.y = newY;
+          this.speedY -= this.acceleration;
+        }
+      }
+    }, 40);
+  }
+
+  isAboveGround() {
+    return this.y < 100;
+  }
+
+  jump() {
+    this.speedY = 15;
+    this.doubleJump += 1;
+
+    console.log(`jump`, this.isJumping);
+  }
 }
