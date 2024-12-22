@@ -8,6 +8,7 @@ class Character extends MovableObject {
   y = 0;
   isJumping = this.isJumping;
   character_jump_sound = new Audio("./audio/character_jump.mp3");
+  characterEnergy = 100;
 
   constructor() {
     super().loadImage("./img/character/idle/character_idle1.png");

@@ -36,8 +36,8 @@ class MovableObject {
       if (this.isAboveGround() || this.speedY > 0) {
         let newY = this.y - this.speedY;
 
-        if (newY > 100) {
-          this.y = 100;
+        if (newY > 102) {
+          this.y = 102;
           this.speedY = 0;
         } else {
           this.y = newY;
@@ -48,13 +48,10 @@ class MovableObject {
   }
 
   isAboveGround() {
-    return this.y < 100;
+    return this.y < 102;
   }
 
   jump() {
     this.speedY = 15;
-    this.doubleJump += 1;
-
-    console.log(`jump`, this.isJumping);
   }
 }
