@@ -8,7 +8,7 @@ class Hud {
   imageSequence = ["./img/hud/hud100.png", "./img/hud/hud090.png", "./img/hud/hud080.png", "./img/hud/hud070.png", "./img/hud/hud060.png", "./img/hud/hud050.png", "./img/hud/hud040.png", "./img/hud/hud030.png", "./img/hud/hud020.png", "./img/hud/hud010.png", "./img/hud/hud000.png"];
 
   constructor() {
-    this.loadImage("./img/hud/health_bar.png");
+    this.loadImage("./img/hud/hud100.png");
     this.loadImages(this.imageSequence);
   }
 

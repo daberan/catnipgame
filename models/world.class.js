@@ -206,6 +206,9 @@ class World {
     this.reduceCharacterEnergy();
     this.character.character_hurt_sound.play();
     this.character.isHurt = true;
+    if (this.character.characterEnergy <= 0) {
+      this.killCharacter();
+    }
     setTimeout(() => {
       this.character.isHurt = false;
     }, 750);
@@ -218,6 +221,14 @@ class World {
     setTimeout(() => {
       this.isCollisionEnabled = true;
     }, 350);
+  }
+
+  killCharacter() {
+    // this.character.character_dead_sound.play();
+    this.character.isDead = true;
+    setTimeout(() => {
+      this.character.isDead = false;
+    }, 2000);
   }
 
   checkCollisionSide(enemy) {
