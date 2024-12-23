@@ -1,11 +1,12 @@
 class World {
   character = new Character();
-
   level = level1;
   canvas;
   ctx;
   keyboard;
   camera_x = 0;
+  isCollisionEnabled = true;
+  hud = new Hud();
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -121,6 +122,7 @@ class World {
     this.addObjectsToMap(this.level.clouds);
 
     this.ctx.translate(-this.camera_x, 0);
+    this.addToMap(this.hud);
 
     requestAnimationFrame(() => {
       this.draw();
@@ -134,45 +136,99 @@ class World {
   }
 
   addToMap(obj) {
-    this.ctx.drawImage(obj.img, obj.x, obj.y, obj.height, obj.width);
-    this.drawCollisionBox(obj);
+    this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
+    if (enableCollisionFrames) {
+      this.drawCollisionBox(obj);
+    }
   }
 
   drawCollisionBox(obj) {
-    if (obj instanceof BackgroundObject || obj instanceof Cloud) {
+    if (obj instanceof BackgroundObject || obj instanceof Cloud || obj instanceof Hud) {
       return;
     }
     this.ctx.beginPath();
     this.ctx.lineWidth = "1";
     if (obj instanceof Blob || obj instanceof Blobmaster) {
       this.ctx.strokeStyle = "red";
+      const collisionHeight = obj.height * 0.6;
+      this.ctx.rect(obj.x, obj.y + (obj.height - collisionHeight), obj.width, collisionHeight);
     } else if (obj instanceof Character) {
       this.ctx.strokeStyle = "green";
+      this.ctx.rect(obj.x, obj.y, obj.width, obj.height);
     }
-    this.ctx.rect(obj.x, obj.y, obj.height, obj.width);
     this.ctx.stroke();
   }
 
   isColliding(obj1, obj2) {
-    return obj1.x + obj1.width > obj2.x && obj1.y + obj1.height > obj2.y && obj1.x < obj2.x + obj2.width && obj1.y < obj2.y + obj2.height;
+    let obj2Height = obj2.height;
+    let obj2Y = obj2.y;
+
+    if (obj2 instanceof Blob || obj2 instanceof Blobmaster) {
+      obj2Height = obj2.height * 0.6;
+      obj2Y = obj2.y + (obj2.height - obj2Height);
+    }
+
+    return obj1.x + obj1.width > obj2.x && obj1.y + obj1.height > obj2Y && obj1.x < obj2.x + obj2.width && obj1.y < obj2Y + obj2Height;
   }
 
   checkCollisions() {
     setInterval(() => {
+      if (!this.isCollisionEnabled) return;
+
       this.level.enemies.forEach((enemy) => {
         if (this.isColliding(this.character, enemy)) {
-          console.log("Collision with character", enemy);
-          this.reduceCharacterEnergy();
-          this.character.jump();
-          // Here you can add additional collision handling logic
-          // For example: character.takeDamage(), enemy.handleCollision(), etc.
+          this.isCollisionEnabled = false;
+          let sound = this.character.character_jump_sound;
+
+          if (this.checkCollisionSide(enemy) == "rightCollision") {
+            this.handleCharacterHit(-1);
+            sound = this.character.character_hurt_sound;
+          }
+
+          if (this.checkCollisionSide(enemy) == "leftCollision") {
+            this.handleCharacterHit(1);
+            sound = this.character.character_hurt_sound;
+          }
+
+          this.character.jump(sound);
+          this.hud.setHealthBarImage(this.character.characterEnergy);
+          this.enableCollision();
         }
       });
-    }, 50);
+    }, 10);
   }
 
   reduceCharacterEnergy() {
-    this.character.characterEnergy -= 1;
-    console.log("Energy:", this.character.characterEnergy);
+    this.character.characterEnergy -= 10;
+  }
+
+  handleCharacterHit(speed) {
+    this.reduceCharacterEnergy();
+    this.character.character_hurt_sound.play();
+    this.character.isHurt = true;
+    setTimeout(() => {
+      this.character.isHurt = false;
+    }, 750);
+    setTimeout(() => {
+      this.character.accelerateOnX(speed);
+    }, 50);
+  }
+
+  enableCollision() {
+    setTimeout(() => {
+      this.isCollisionEnabled = true;
+    }, 350);
+  }
+
+  checkCollisionSide(enemy) {
+    if (this.character.y < enemy.y && this.character.isAboveGround()) {
+      return "bottomCollision";
+    }
+    if (this.character.x < enemy.x && !this.character.isAboveGround()) {
+      return "rightCollision";
+    }
+    if (this.character.x > enemy.x && !this.character.isAboveGround()) {
+      return "leftCollision";
+    }
   }
 }

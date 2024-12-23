@@ -11,6 +11,7 @@
     <script src="./models/cloud.class.js"></script>
     <script src="./models/world.class.js"></script>
     <script src="./models/background-object.class.js"></script>
+    <script src="./models/hud.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
@@ -21,6 +22,6 @@
   <body onload="init()">
     <h1>Das Spiel!</h1>
 
-    <canvas id="canvas" width="720" height="480"> </canvas>
+    <canvas onclick="toggleCollisionframes()" id="canvas" width="720" height="480"> </canvas>
   </body>
 </html>

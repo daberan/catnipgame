@@ -1,6 +1,12 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let enableCollisionFrames = false;
+
+function toggleCollisionframes() {
+  enableCollisionFrames = !enableCollisionFrames;
+  console.log("Collision frames are: ", enableCollisionFrames);
+}
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -12,7 +18,6 @@ function init() {
 }
 
 document.addEventListener("keydown", (event) => {
-  console.log(event.key);
   if (event.key === "ArrowUp") {
     keyboard.UP = true;
   }
@@ -40,7 +45,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keyup", (event) => {
-  console.log(event.key);
   if (event.key === "ArrowUp") {
     keyboard.UP = false;
   }

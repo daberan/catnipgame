@@ -8,8 +8,10 @@ class MovableObject {
   speed = 500;
   imageCache = {};
   speedY = 0;
+  speedX = 1;
   acceleration = 2;
   isJumping = false;
+  isKicked = false;
 
   loadImage(path) {
     this.img = new Image();
@@ -32,7 +34,6 @@ class MovableObject {
 
   applyGravity() {
     setInterval(() => {
-      // Nur Gravitation anwenden wenn in der Luft ODER positive speedY (beim Springen)
       if (this.isAboveGround() || this.speedY > 0) {
         let newY = this.y - this.speedY;
 
@@ -51,7 +52,30 @@ class MovableObject {
     return this.y < 102;
   }
 
-  jump() {
+  jump(sound) {
     this.speedY = 15;
+    if (!sound) {
+      return;
+    }
+    sound.play();
+  }
+
+  accelerateOnX(speed) {
+    if (this.isKicked) return;
+
+    let totalDistance = 0;
+    this.isKicked = true;
+    this.speedX = speed;
+
+    const kickInterval = setInterval(() => {
+      if (!this.isAboveGround() || Math.abs(totalDistance) >= 50) {
+        this.speedX = 0;
+        this.isKicked = false;
+        clearInterval(kickInterval);
+        return;
+      }
+      this.x += this.speedX;
+      totalDistance += this.speedX;
+    }, 10);
   }
 }

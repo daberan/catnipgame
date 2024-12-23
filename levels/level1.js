@@ -55,5 +55,6 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground2.png", 320 * 4, 20),
     new BackgroundObject("./img/environment/background/ground_new.png", 320 * 4, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", 320 * 4, 25),
-  ]
+  ],
+  [new Hud()]
 );

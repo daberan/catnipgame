@@ -2,12 +2,15 @@ class Character extends MovableObject {
   sequence_idle = ["./img/character/idle/character_idle1.png", "./img/character/idle/character_idle2.png", "./img/character/idle/character_idle3.png", "./img/character/idle/character_idle4.png", "./img/character/idle/character_idle5.png", "./img/character/idle/character_idle6.png", "./img/character/idle/character_idle7.png"];
   sequence_rolling_right = ["./img/character/rolling/character_rolling1.png", "./img/character/rolling/character_rolling2.png", "./img/character/rolling/character_rolling3.png", "./img/character/rolling/character_rolling4.png", "./img/character/rolling/character_rolling5.png", "./img/character/rolling/character_rolling6.png", "./img/character/rolling/character_rolling7.png", "./img/character/rolling/character_rolling8.png"];
   sequence_rolling_left = ["./img/character/rolling/character_rolling1.png", "./img/character/rolling/character_rolling8.png", "./img/character/rolling/character_rolling7.png", "./img/character/rolling/character_rolling6.png", "./img/character/rolling/character_rolling5.png", "./img/character/rolling/character_rolling4.png", "./img/character/rolling/character_rolling3.png", "./img/character/rolling/character_rolling2.png"];
+  sequence_hurt = ["./img/character/hurt/character_hurt1.png", "./img/character/hurt/character_hurt2.png"];
   currentImage = 0;
   currentSequence = this.sequence_idle;
   world;
   y = 0;
   isJumping = this.isJumping;
+  isHurt = false;
   character_jump_sound = new Audio("./audio/character_jump.mp3");
+  character_hurt_sound = new Audio("./audio/hurt.wav");
   characterEnergy = 100;
 
   constructor() {
@@ -15,6 +18,7 @@ class Character extends MovableObject {
     this.loadImages(this.sequence_idle);
     this.loadImages(this.sequence_rolling_right);
     this.loadImages(this.sequence_rolling_left);
+    this.loadImages(this.sequence_hurt);
 
     this.applyGravity();
     this.animate();
@@ -23,19 +27,16 @@ class Character extends MovableObject {
   }
 
   animate() {
+    // Picks the right animation sequence
+    setInterval(() => {
+      this.sequencePicker();
+    }, 10);
+
     //jump
     setInterval(() => {
       if (this.world.keyboard.UP && !this.isAboveGround()) {
-        this.jump();
-        this.character_jump_sound.play();
+        this.jump(this.character_jump_sound);
       }
-    }, 10);
-
-    // Picks the right animation sequence
-    setInterval(() => {
-      console.log(this.world.character.x);
-
-      this.sequencePicker();
     }, 10);
 
     // Idle
@@ -51,6 +52,16 @@ class Character extends MovableObject {
     // Rolling
     setInterval(() => {
       if (this.currentSequence === this.sequence_rolling_left || this.currentSequence === this.sequence_rolling_right) {
+        let i = this.currentImage % this.currentSequence.length;
+        let path = this.currentSequence[i];
+        this.img = this.imageCache[path];
+        this.currentImage++;
+      }
+    }, 50);
+
+    // hurt
+    setInterval(() => {
+      if (this.currentSequence === this.sequence_hurt) {
         let i = this.currentImage % this.currentSequence.length;
         let path = this.currentSequence[i];
         this.img = this.imageCache[path];
@@ -78,12 +89,14 @@ class Character extends MovableObject {
   }
 
   sequencePicker() {
-    if (this.world.keyboard.LEFT) {
+    if (this.world.keyboard.LEFT && !this.isHurt) {
       this.currentSequence = this.sequence_rolling_left;
-    } else if (this.world.keyboard.RIGHT) {
+    } else if (this.world.keyboard.RIGHT && !this.isHurt) {
       this.currentSequence = this.sequence_rolling_right;
-    } else {
+    } else if (!this.isHurt) {
       this.currentSequence = this.sequence_idle;
+    } else {
+      this.currentSequence = this.sequence_hurt;
     }
   }
 }

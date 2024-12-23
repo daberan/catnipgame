@@ -64,7 +64,7 @@ class Blob extends MovableObject {
           this.audioContext.resume();
         }
         this.updateAudio();
-        this.blob_bounce_sound.play().catch((err) => console.log("Audio play error:", err));
+        this.blob_bounce_sound.play();
       }
 
       this.currentImage++;
