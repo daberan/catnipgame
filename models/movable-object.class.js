@@ -12,6 +12,15 @@ class MovableObject {
   acceleration = 2;
   isJumping = false;
   isKicked = false;
+  groundX = 102;
+
+  setGroundX() {
+    if (this.isDead) {
+      this.groundX = 250;
+    } else {
+      this.groundX = 102;
+    }
+  }
 
   loadImage(path) {
     this.img = new Image();
@@ -34,11 +43,13 @@ class MovableObject {
 
   applyGravity() {
     setInterval(() => {
+      this.setGroundX();
       if (this.isAboveGround() || this.speedY > 0) {
         let newY = this.y - this.speedY;
+        let groundX = this.groundX;
 
-        if (newY > 102) {
-          this.y = 102;
+        if (newY > groundX) {
+          this.y = groundX;
           this.speedY = 0;
         } else {
           this.y = newY;
@@ -49,7 +60,7 @@ class MovableObject {
   }
 
   isAboveGround() {
-    return this.y < 102;
+    return this.y < this.groundX;
   }
 
   jump(sound) {

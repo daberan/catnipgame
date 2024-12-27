@@ -13,7 +13,10 @@ class Character extends MovableObject {
   isDead = false;
   character_jump_sound = new Audio("./audio/character_jump.mp3");
   character_hurt_sound = new Audio("./audio/hurt.wav");
+  character_enemyJump_sound = new Audio("./audio/enemyJump3.wav");
+
   characterEnergy = 100;
+  characterGroundX = 102;
 
   constructor() {
     super().loadImage("./img/character/idle/character_idle1.png");
@@ -23,7 +26,7 @@ class Character extends MovableObject {
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dead);
 
-    this.applyGravity();
+    this.applyGravity(this.characterGroundX);
     this.animate();
     this.walkRight();
     this.walkLeft();

@@ -3,6 +3,7 @@ class Blob extends MovableObject {
   currentImage = Math.floor(Math.random() * 6);
   y = 100;
   world;
+  health = 20;
 
   // Audio setup
   audioContext = new AudioContext();
@@ -59,7 +60,6 @@ class Blob extends MovableObject {
 
       // Play bounce sound when blob is at the bottom of its animation
       if (i === 3) {
-        // Adjust this frame number if needed based on your animation
         if (this.audioContext.state === "suspended") {
           this.audioContext.resume();
         }

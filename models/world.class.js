@@ -137,6 +137,12 @@ class World {
 
   addToMap(obj) {
     this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
+    if (obj instanceof Blob || obj instanceof Blobmaster) {
+      this.ctx.font = "10px tiny5";
+      this.ctx.fillStyle = "white";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(obj.health, obj.x + obj.width / 2, obj.y + 4);
+    }
     if (enableCollisionFrames) {
       this.drawCollisionBox(obj);
     }
@@ -178,16 +184,24 @@ class World {
       this.level.enemies.forEach((enemy) => {
         if (this.isColliding(this.character, enemy)) {
           this.isCollisionEnabled = false;
-          let sound = this.character.character_jump_sound;
+          let sound = this.character.character_enemyJump_sound;
 
           if (this.checkCollisionSide(enemy) == "rightCollision") {
             this.handleCharacterHit(-1);
             sound = this.character.character_hurt_sound;
+            console.log("rightCollision");
           }
 
           if (this.checkCollisionSide(enemy) == "leftCollision") {
             this.handleCharacterHit(1);
             sound = this.character.character_hurt_sound;
+            console.log("leftCollision");
+          }
+
+          if (this.checkCollisionSide(enemy) == "bottomCollision") {
+            sound = this.character.character_enemyJump_sound;
+            enemy.health -= 10;
+            console.log("bottomCollision", enemy);
           }
 
           this.character.jump(sound);
@@ -195,7 +209,13 @@ class World {
           this.enableCollision();
         }
       });
-    }, 10);
+    }, 1);
+  }
+
+  enableCollision() {
+    setTimeout(() => {
+      this.isCollisionEnabled = true;
+    }, 250);
   }
 
   reduceCharacterEnergy() {
@@ -217,22 +237,17 @@ class World {
     }, 50);
   }
 
-  enableCollision() {
-    setTimeout(() => {
-      this.isCollisionEnabled = true;
-    }, 350);
-  }
-
   killCharacter() {
     // this.character.character_dead_sound.play();
     this.character.isDead = true;
+
     setTimeout(() => {
       this.character.isDead = false;
     }, 2000);
   }
 
   checkCollisionSide(enemy) {
-    if (this.character.y < enemy.y && this.character.isAboveGround()) {
+    if (this.character.y < enemy.y + enemy.height && this.character.isAboveGround()) {
       return "bottomCollision";
     }
     if (this.character.x < enemy.x && !this.character.isAboveGround()) {

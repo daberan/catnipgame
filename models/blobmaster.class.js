@@ -5,6 +5,7 @@ class Blobmaster extends MovableObject {
   height = 64;
   width = 64;
   y = 67;
+  health = 60;
 
   audioContext = new AudioContext();
   gainNode = this.audioContext.createGain();

@@ -18,3 +18,8 @@ canvas {
   width: calc(320px * var(--canvasSizeMult));
   height: calc(180px * var(--canvasSizeMult));
 }
+
+@font-face {
+  font-family: "Tiny5";
+  src: url("./fonts/Tiny5.ttf") format("truetype");
+}
