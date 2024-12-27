@@ -7,6 +7,7 @@ class World {
   camera_x = 0;
   isCollisionEnabled = true;
   hud = new Hud();
+  shit = [new Shit()];
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -110,7 +111,7 @@ class World {
     this.addToMap(this.character);
 
     // foreground1
-    let foreGroundMove = Math.floor(this.camera_x / 1);
+    let foreGroundMove = Math.floor(this.camera_x);
     this.ctx.translate(foreGroundMove, 0);
     this.level.backgroundObjects.forEach((bg) => {
       if (bg.img.src.endsWith("/foreground2.png")) {
@@ -120,6 +121,7 @@ class World {
     this.ctx.translate(-foreGroundMove, 0);
 
     this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.shit);
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.hud);
@@ -137,16 +139,22 @@ class World {
 
   addToMap(obj) {
     this.ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
-    if (obj instanceof Blob || obj instanceof Blobmaster) {
-      this.ctx.font = "10px tiny5";
-      this.ctx.fillStyle = "white";
-      this.ctx.textAlign = "center";
-      this.ctx.fillText(obj.health, obj.x + obj.width / 2, obj.y + 4);
-    }
+    this.displayEnemyHealth(obj);
     if (enableCollisionFrames) {
       this.drawCollisionBox(obj);
     }
   }
+
+  displayEnemyHealth(obj) {
+    if (obj instanceof Blob || obj instanceof Blobmaster) {
+      this.ctx.font = "18px tiny5";
+      this.ctx.fillStyle = "red";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(obj.health, obj.x + obj.width / 2, obj.y + 4);
+    }
+  }
+
+  renderShit(obj) {}
 
   drawCollisionBox(obj) {
     if (obj instanceof BackgroundObject || obj instanceof Cloud || obj instanceof Hud) {
@@ -189,19 +197,16 @@ class World {
           if (this.checkCollisionSide(enemy) == "rightCollision") {
             this.handleCharacterHit(-1);
             sound = this.character.character_hurt_sound;
-            console.log("rightCollision");
           }
 
           if (this.checkCollisionSide(enemy) == "leftCollision") {
             this.handleCharacterHit(1);
             sound = this.character.character_hurt_sound;
-            console.log("leftCollision");
           }
 
           if (this.checkCollisionSide(enemy) == "bottomCollision") {
             sound = this.character.character_enemyJump_sound;
             enemy.health -= 10;
-            console.log("bottomCollision", enemy);
           }
 
           this.character.jump(sound);
@@ -209,7 +214,7 @@ class World {
           this.enableCollision();
         }
       });
-    }, 1);
+    }, 10);
   }
 
   enableCollision() {

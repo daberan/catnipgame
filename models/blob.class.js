@@ -14,7 +14,7 @@ class Blob extends MovableObject {
     super().loadImage("./img/enemies/blob/idle/blobIdle1.png");
     this.loadImages(this.sequence_idle);
     this.speed = Math.floor(Math.random() * 7) + 6;
-    this.x = Math.round(100 + Math.random() * 150);
+    this.x = Math.round(100 + Math.random() * 500);
 
     // Set up audio nodes
     this.blob_bounce_sound = new Audio("./audio/blob_bounce1.wav");
