@@ -44,7 +44,6 @@ document.addEventListener("keydown", (event) => {
   }
   if (event.key === "p") {
     keyboard.P = true;
-    console.log("P is pressed");
   }
 });
 

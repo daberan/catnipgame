@@ -8,6 +8,7 @@ class World {
   isCollisionEnabled = true;
   hud = new Hud();
   shit = [];
+  lastDirection = 1;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -227,7 +228,7 @@ class World {
 
     setInterval(() => {
       if (this.keyboard.P && !shitCooldown) {
-        let poop = new Shit(this.character.x, this.character.y);
+        let poop = new Shit(this.character.x, this.character.y, this.checkCharacterDirection());
         this.shit.push(poop);
 
         shitCooldown = true;
@@ -236,6 +237,21 @@ class World {
         }, 500);
       }
     }, 10);
+  }
+
+  checkCharacterDirection() {
+    if (this.keyboard.RIGHT) {
+      this.lastDirection = 1;
+      console.log("Direction: Right (1)");
+      return 1;
+    } else if (this.keyboard.LEFT) {
+      this.lastDirection = -1;
+      console.log("Direction: Left (-1)");
+      return -1;
+    }
+
+    console.log("Last Direction:", this.lastDirection || 1);
+    return this.lastDirection || 1;
   }
 
   reduceCharacterEnergy() {

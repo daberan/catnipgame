@@ -90,19 +90,4 @@ class MovableObject {
       totalDistance += this.speedX;
     }, 10);
   }
-
-  checkCharacterDirection() {
-    if (this.keyboard.RIGHT) {
-      this.lastDirection = 1;
-      console.log("Direction: Right (1)");
-      return 1;
-    } else if (this.keyboard.LEFT) {
-      this.lastDirection = -1;
-      console.log("Direction: Left (-1)");
-      return -1;
-    }
-
-    console.log("Last Direction:", this.lastDirection || 1);
-    return this.lastDirection || 1;
-  }
 }
