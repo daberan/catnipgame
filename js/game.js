@@ -42,6 +42,10 @@ document.addEventListener("keydown", (event) => {
   if (event.key === " ") {
     keyboard.SPACE = true;
   }
+  if (event.key === "p") {
+    keyboard.P = true;
+    console.log("P is pressed");
+  }
 });
 
 document.addEventListener("keyup", (event) => {
@@ -68,5 +72,8 @@ document.addEventListener("keyup", (event) => {
   }
   if (event.key === " ") {
     keyboard.SPACE = false;
+  }
+  if (event.key === "p") {
+    keyboard.P = false;
   }
 });

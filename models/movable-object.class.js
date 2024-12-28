@@ -15,7 +15,7 @@ class MovableObject {
   groundX = 102;
 
   setGroundX() {
-    if (this.isDead) {
+    if (this.isDead || this instanceof Shit) {
       this.groundX = 250;
     } else {
       this.groundX = 102;
@@ -71,15 +71,16 @@ class MovableObject {
     sound.play();
   }
 
-  accelerateOnX(speed) {
+  accelerateOnX(speed, maxDistance = 50) {
     if (this.isKicked) return;
 
     let totalDistance = 0;
+
     this.isKicked = true;
     this.speedX = speed;
 
     const kickInterval = setInterval(() => {
-      if (!this.isAboveGround() || Math.abs(totalDistance) >= 50) {
+      if ((!(this instanceof Shit) && !this.isAboveGround()) || Math.abs(totalDistance) >= maxDistance) {
         this.speedX = 0;
         this.isKicked = false;
         clearInterval(kickInterval);
@@ -88,5 +89,20 @@ class MovableObject {
       this.x += this.speedX;
       totalDistance += this.speedX;
     }, 10);
+  }
+
+  checkCharacterDirection() {
+    if (this.keyboard.RIGHT) {
+      this.lastDirection = 1;
+      console.log("Direction: Right (1)");
+      return 1;
+    } else if (this.keyboard.LEFT) {
+      this.lastDirection = -1;
+      console.log("Direction: Left (-1)");
+      return -1;
+    }
+
+    console.log("Last Direction:", this.lastDirection || 1);
+    return this.lastDirection || 1;
   }
 }

@@ -7,7 +7,7 @@ class World {
   camera_x = 0;
   isCollisionEnabled = true;
   hud = new Hud();
-  shit = [new Shit()];
+  shit = [];
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -16,6 +16,7 @@ class World {
     this.draw();
     this.setWorld();
     this.checkCollisions();
+    this.checkThrowObjects();
 
     let theme = new Audio("./audio/Thunderbirds.wav");
     theme.loop = true;
@@ -154,8 +155,6 @@ class World {
     }
   }
 
-  renderShit(obj) {}
-
   drawCollisionBox(obj) {
     if (obj instanceof BackgroundObject || obj instanceof Cloud || obj instanceof Hud) {
       return;
@@ -221,6 +220,22 @@ class World {
     setTimeout(() => {
       this.isCollisionEnabled = true;
     }, 250);
+  }
+
+  checkThrowObjects() {
+    let shitCooldown = false;
+
+    setInterval(() => {
+      if (this.keyboard.P && !shitCooldown) {
+        let poop = new Shit(this.character.x, this.character.y);
+        this.shit.push(poop);
+
+        shitCooldown = true;
+        setTimeout(() => {
+          shitCooldown = false;
+        }, 500);
+      }
+    }, 10);
   }
 
   reduceCharacterEnergy() {
