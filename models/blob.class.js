@@ -1,11 +1,13 @@
 class Blob extends MovableObject {
   sequence_idle = ["./img/enemies/blob/idle/blobIdle1.png", "./img/enemies/blob/idle/blobIdle2.png", "./img/enemies/blob/idle/blobIdle3.png", "./img/enemies/blob/idle/blobIdle4.png", "./img/enemies/blob/idle/blobIdle5.png", "./img/enemies/blob/idle/blobIdle6.png"];
+  sequence_hurt = ["./img/enemies/blob/hurt/blob_hurt1.png", "./img/enemies/blob/hurt/blob_hurt2.png"];
+  sequence_dying = ["./img/enemies/blob/dead/blob_dead1.png", "./img/enemies/blob/dead/blob_dead2.png"];
   currentImage = Math.floor(Math.random() * 6);
   y = 100;
   world;
   health = 20;
+  currentSequence = this.sequence_idle;
 
-  // Audio setup
   audioContext = new AudioContext();
   gainNode = this.audioContext.createGain();
   pannerNode = this.audioContext.createStereoPanner();
@@ -13,10 +15,11 @@ class Blob extends MovableObject {
   constructor() {
     super().loadImage("./img/enemies/blob/idle/blobIdle1.png");
     this.loadImages(this.sequence_idle);
+    this.loadImages(this.sequence_hurt);
+    this.loadImages(this.sequence_dying);
     this.speed = Math.floor(Math.random() * 7) + 6;
     this.x = Math.round(100 + Math.random() * 500);
 
-    // Set up audio nodes
     this.blob_bounce_sound = new Audio("./audio/blob_bounce1.wav");
     const track = this.audioContext.createMediaElementSource(this.blob_bounce_sound);
     track.connect(this.pannerNode);
@@ -54,8 +57,10 @@ class Blob extends MovableObject {
   animate() {
     this.moveLeft(1000 / this.speed);
     setInterval(() => {
-      let i = this.currentImage % this.sequence_idle.length;
-      let path = this.sequence_idle[i];
+      this.checkIfDead();
+      this.updateCurrentAnimationSequence();
+      let i = this.currentImage % this.currentSequence.length;
+      let path = this.currentSequence[i];
       this.img = this.imageCache[path];
 
       // Play bounce sound when blob is at the bottom of its animation
@@ -69,5 +74,22 @@ class Blob extends MovableObject {
 
       this.currentImage++;
     }, 75);
+  }
+
+  updateCurrentAnimationSequence() {
+    if (this.isHurt) {
+      this.currentSequence = this.sequence_hurt;
+    } else if (this.isDead) {
+      this.currentSequence = this.sequence_dying;
+    } else {
+      this.currentSequence = this.sequence_idle;
+    }
+  }
+
+  checkIfDead() {
+    if (this.health < 10) {
+      this.isHurt = false;
+      this.isDead = true;
+    }
   }
 }

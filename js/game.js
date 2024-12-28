@@ -2,6 +2,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let enableCollisionFrames = false;
+let direction = 1;
 
 function toggleCollisionframes() {
   enableCollisionFrames = !enableCollisionFrames;

@@ -156,6 +156,17 @@ class World {
     }
   }
 
+  killEnemy(obj) {
+    setTimeout(() => {
+      if (obj.health < 10) {
+        const index = this.level.enemies.indexOf(obj);
+        if (index > -1) {
+          this.level.enemies.splice(index, 1);
+        }
+      }
+    }, 500);
+  }
+
   drawCollisionBox(obj) {
     if (obj instanceof BackgroundObject || obj instanceof Cloud || obj instanceof Hud) {
       return;
@@ -164,7 +175,7 @@ class World {
     this.ctx.lineWidth = "1";
     if (obj instanceof Blob || obj instanceof Blobmaster) {
       this.ctx.strokeStyle = "red";
-      const collisionHeight = obj.height * 0.6;
+      const collisionHeight = obj.height * 0.7;
       this.ctx.rect(obj.x, obj.y + (obj.height - collisionHeight), obj.width, collisionHeight);
     } else if (obj instanceof Character) {
       this.ctx.strokeStyle = "green";
@@ -178,7 +189,7 @@ class World {
     let obj2Y = obj2.y;
 
     if (obj2 instanceof Blob || obj2 instanceof Blobmaster) {
-      obj2Height = obj2.height * 0.6;
+      obj2Height = obj2.height * 0.7;
       obj2Y = obj2.y + (obj2.height - obj2Height);
     }
 
@@ -207,6 +218,11 @@ class World {
           if (this.checkCollisionSide(enemy) == "bottomCollision") {
             sound = this.character.character_enemyJump_sound;
             enemy.health -= 10;
+            enemy.isHurt = true;
+            setTimeout(() => {
+              enemy.isHurt = false;
+            }, 450);
+            this.killEnemy(enemy);
           }
 
           this.character.jump(sound);
@@ -284,12 +300,16 @@ class World {
 
   checkCollisionSide(enemy) {
     if (this.character.y < enemy.y + enemy.height && this.character.isAboveGround()) {
+      console.log("bottomCollision");
+
       return "bottomCollision";
     }
     if (this.character.x < enemy.x && !this.character.isAboveGround()) {
+      console.log("rightCollision");
       return "rightCollision";
     }
     if (this.character.x > enemy.x && !this.character.isAboveGround()) {
+      console.log("leftCollision");
       return "leftCollision";
     }
   }
