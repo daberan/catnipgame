@@ -11,6 +11,8 @@ class Blobmaster extends MovableObject {
   isHurt = false;
   isDead = false;
   currentSequence = this.sequence_idle;
+  walkDirection = 1;
+  blobmasterX = 1;
 
   audioContext = new AudioContext();
   gainNode = this.audioContext.createGain();
@@ -21,6 +23,7 @@ class Blobmaster extends MovableObject {
     this.loadImages(this.sequence_idle);
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dying);
+
     this.speed = Math.floor(Math.random() * 7) + 6;
     this.x = Math.round(100 + Math.random() * 150);
 
@@ -59,6 +62,7 @@ class Blobmaster extends MovableObject {
   animate() {
     this.moveLeft(1000 / this.speed);
     setInterval(() => {
+      this.blobmasterX = this.x;
       this.checkIfDead();
       this.updateCurrentAnimationSequence();
       let i = this.currentImage % this.currentSequence.length;

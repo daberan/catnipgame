@@ -33,19 +33,24 @@ class Character extends MovableObject {
   }
 
   animate() {
-    // Picks the right animation sequence
-    setInterval(() => {
-      this.sequencePicker();
-    }, 10);
+    this.animationSequencePicker();
 
-    //jump
+    this.handleJumpAnimation();
+    this.handleIdleAnimation();
+    this.handleRollingAnimation();
+    this.handleHurtAnimation();
+    this.handleDyingAnimation();
+  }
+
+  handleJumpAnimation() {
     setInterval(() => {
       if (this.world.keyboard.UP && !this.isAboveGround()) {
         this.jump(this.character_jump_sound);
       }
     }, 10);
+  }
 
-    // Idle
+  handleIdleAnimation() {
     setInterval(() => {
       if (this.currentSequence === this.sequence_idle) {
         let i = this.currentImage % this.sequence_idle.length;
@@ -54,8 +59,9 @@ class Character extends MovableObject {
         this.currentImage++;
       }
     }, 100);
+  }
 
-    // Rolling
+  handleRollingAnimation() {
     setInterval(() => {
       if (this.currentSequence === this.sequence_rolling_left || this.currentSequence === this.sequence_rolling_right) {
         let i = this.currentImage % this.currentSequence.length;
@@ -64,8 +70,9 @@ class Character extends MovableObject {
         this.currentImage++;
       }
     }, 50);
+  }
 
-    // hurt
+  handleHurtAnimation() {
     setInterval(() => {
       if (this.currentSequence === this.sequence_hurt) {
         let i = this.currentImage % this.currentSequence.length;
@@ -74,7 +81,9 @@ class Character extends MovableObject {
         this.currentImage++;
       }
     }, 50);
-    //dead
+  }
+
+  handleDyingAnimation() {
     setInterval(() => {
       if (this.currentSequence === this.sequence_dead) {
         let i = this.currentImage % this.currentSequence.length;
@@ -103,17 +112,19 @@ class Character extends MovableObject {
     }, 8);
   }
 
-  sequencePicker() {
-    if (this.world.keyboard.LEFT && !this.isHurt && !this.isDead) {
-      this.currentSequence = this.sequence_rolling_left;
-    } else if (this.world.keyboard.RIGHT && !this.isHurt && !this.isDead) {
-      this.currentSequence = this.sequence_rolling_right;
-    } else if (!this.isHurt && !this.isDead) {
-      this.currentSequence = this.sequence_idle;
-    } else if (!this.isDead) {
-      this.currentSequence = this.sequence_hurt;
-    } else {
-      this.currentSequence = this.sequence_dead;
-    }
+  animationSequencePicker() {
+    setInterval(() => {
+      if (this.world.keyboard.LEFT && !this.isHurt && !this.isDead) {
+        this.currentSequence = this.sequence_rolling_left;
+      } else if (this.world.keyboard.RIGHT && !this.isHurt && !this.isDead) {
+        this.currentSequence = this.sequence_rolling_right;
+      } else if (!this.isHurt && !this.isDead) {
+        this.currentSequence = this.sequence_idle;
+      } else if (!this.isDead) {
+        this.currentSequence = this.sequence_hurt;
+      } else {
+        this.currentSequence = this.sequence_dead;
+      }
+    }, 10);
   }
 }

@@ -37,7 +37,15 @@ class MovableObject {
 
   moveLeft(speed) {
     setInterval(() => {
-      this.x -= 1;
+      // Für Blobmaster Instanzen
+      if (this instanceof Blobmaster) {
+        const characterX = this.getCharacterX(); // Nutze die existierende Methode
+        const direction = characterX > this.x ? 1 : -1;
+        this.x += 1 * direction; // Note: Changed -= to += to match direction logic
+      } else {
+        // Für andere MovableObjects
+        this.x += -1;
+      }
     }, speed);
   }
 
@@ -70,6 +78,19 @@ class MovableObject {
     }
     sound.play();
   }
+
+  // checkIfLeftOrRight(characterX, enemyX) {
+  //   setInterval(() => {
+  //     if (characterX > enemyX) {
+  //       this.walkDirection = 1;
+  //       return 1;
+  //     }
+  //     if (characterX < enemyX) {
+  //       this.walkDirection = -1;
+  //       return -1;
+  //     }
+  //   }, 250);
+  // }
 
   accelerateOnX(speed, maxDistance = 50) {
     if (this.isKicked) return;

@@ -8,7 +8,42 @@ class World {
   isCollisionEnabled = true;
   hud = new Hud();
   shit = [];
-  lastDirection = 1;
+  lastCharacterDirection = 1;
+  backgrounds = [
+    {
+      cameraxDivider: 0,
+      imageSrcName: "sky.png",
+    },
+    {
+      cameraxDivider: 1000,
+      imageSrcName: "background-clouds2.png",
+    },
+    {
+      cameraxDivider: 200,
+      imageSrcName: "background-clouds1.png",
+    },
+    {
+      cameraxDivider: 20,
+      imageSrcName: "mountains2.png",
+    },
+    {
+      cameraxDivider: 6,
+      imageSrcName: "mountains1.png",
+    },
+    {
+      cameraxDivider: 3,
+      imageSrcName: "/ground2.png",
+    },
+    {
+      cameraxDivider: 1,
+      imageSrcName: "/ground_new.png",
+      noTranslateBack: true,
+    },
+    {
+      cameraxDivider: 1,
+      imageSrcName: "/foreground2.png",
+    },
+  ];
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -39,88 +74,18 @@ class World {
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // Sky (stationary)
-    let skyMove = Math.floor(this.camera_x / 0);
-    this.ctx.translate(skyMove, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.includes("sky.png")) {
-        this.addToMap(bg);
-      }
-    });
-    this.ctx.translate(-skyMove, 0);
-
-    // Far clouds (slowest)
-    let farCloudsMove = Math.floor(this.camera_x / 1000);
-    this.ctx.translate(farCloudsMove, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.includes("background-clouds2.png")) {
-        this.addToMap(bg);
-      }
-    });
-    this.ctx.translate(-farCloudsMove, 0);
-
-    // Close clouds
-    let closeCloudsMove = Math.floor(this.camera_x / 200);
-    this.ctx.translate(closeCloudsMove, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.includes("background-clouds1.png")) {
-        this.addToMap(bg);
-      }
-    });
-    this.ctx.translate(-closeCloudsMove, 0);
-
-    // Far mountains
-    let farMountainsMove = Math.floor(this.camera_x / 20);
-    this.ctx.translate(farMountainsMove, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.includes("mountains2.png")) {
-        this.addToMap(bg);
-      }
-    });
-    this.ctx.translate(-farMountainsMove, 0);
-
-    // Close mountains
-    let closeMountainsMove = Math.floor(this.camera_x / 6);
-    this.ctx.translate(closeMountainsMove, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.includes("mountains1.png")) {
-        this.addToMap(bg);
-      }
-    });
-    this.ctx.translate(-closeMountainsMove, 0);
-
-    // Close ground
-    let closeGroundMove = Math.floor(this.camera_x / 3);
-    this.ctx.translate(closeGroundMove, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.endsWith("/ground2.png")) {
-        this.addToMap(bg);
-      }
-    });
-    this.ctx.translate(-closeGroundMove, 0);
-
-    // Main ground and game objects (full camera movement)
-    this.ctx.translate(this.camera_x, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.endsWith("/ground_new.png")) {
-        this.addToMap(bg);
-      }
-    });
+    this.drawBackgroundSky();
+    this.drawFarBackClouds();
+    this.drawMiddleClouds();
+    this.drawBackgroundMountains();
+    this.drawMountains();
+    this.drawHills();
+    this.drawMainGround();
 
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.character);
 
-    // foreground1
-    let foreGroundMove = Math.floor(this.camera_x);
-    this.ctx.translate(foreGroundMove, 0);
-    this.level.backgroundObjects.forEach((bg) => {
-      if (bg.img.src.endsWith("/foreground2.png")) {
-        this.addToMap(bg);
-      }
-    });
-    this.ctx.translate(-foreGroundMove, 0);
+    this.drawForeground();
 
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.shit);
@@ -131,6 +96,51 @@ class World {
     requestAnimationFrame(() => {
       this.draw();
     });
+  }
+
+  drawBackground(backgroundConfig) {
+    let moveAmount = Math.floor(this.camera_x / backgroundConfig.cameraxDivider);
+    this.ctx.translate(moveAmount, 0);
+    this.level.backgroundObjects.forEach((bg) => {
+      if (bg.img.src.includes(backgroundConfig.imageSrcName)) {
+        this.addToMap(bg);
+      }
+    });
+    if (!backgroundConfig.noTranslateBack) {
+      this.ctx.translate(-moveAmount, 0);
+    }
+  }
+
+  drawBackgroundSky() {
+    this.drawBackground(this.backgrounds[0]);
+  }
+
+  drawFarBackClouds() {
+    this.drawBackground(this.backgrounds[1]);
+  }
+
+  drawMiddleClouds() {
+    this.drawBackground(this.backgrounds[2]);
+  }
+
+  drawBackgroundMountains() {
+    this.drawBackground(this.backgrounds[3]);
+  }
+
+  drawMountains() {
+    this.drawBackground(this.backgrounds[4]);
+  }
+
+  drawHills() {
+    this.drawBackground(this.backgrounds[5]);
+  }
+
+  drawMainGround() {
+    this.drawBackground(this.backgrounds[6]);
+  }
+
+  drawForeground() {
+    this.drawBackground(this.backgrounds[7]);
   }
 
   addObjectsToMap(objects) {
@@ -192,7 +202,6 @@ class World {
       obj2Height = obj2.height * 0.7;
       obj2Y = obj2.y + (obj2.height - obj2Height);
     }
-
     return obj1.x + obj1.width > obj2.x && obj1.y + obj1.height > obj2Y && obj1.x < obj2.x + obj2.width && obj1.y < obj2Y + obj2Height;
   }
 
@@ -257,17 +266,11 @@ class World {
 
   checkCharacterDirection() {
     if (this.keyboard.RIGHT) {
-      this.lastDirection = 1;
-      console.log("Direction: Right (1)");
-      return 1;
+      this.lastCharacterDirection = 1;
     } else if (this.keyboard.LEFT) {
-      this.lastDirection = -1;
-      console.log("Direction: Left (-1)");
-      return -1;
+      this.lastCharacterDirection = -1;
     }
-
-    console.log("Last Direction:", this.lastDirection || 1);
-    return this.lastDirection || 1;
+    return this.lastCharacterDirection;
   }
 
   reduceCharacterEnergy() {
@@ -290,7 +293,6 @@ class World {
   }
 
   killCharacter() {
-    // this.character.character_dead_sound.play();
     this.character.isDead = true;
 
     setTimeout(() => {

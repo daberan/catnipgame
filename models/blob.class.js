@@ -17,7 +17,7 @@ class Blob extends MovableObject {
     this.loadImages(this.sequence_idle);
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dying);
-    this.speed = Math.floor(Math.random() * 7) + 6;
+    this.speed = Math.floor(Math.random() * 10) + 6;
     this.x = Math.round(100 + Math.random() * 500);
 
     this.blob_bounce_sound = new Audio("./audio/blob_bounce1.wav");
@@ -55,7 +55,7 @@ class Blob extends MovableObject {
   }
 
   animate() {
-    this.moveLeft(1000 / this.speed);
+    this.moveLeft(250 / this.speed);
     setInterval(() => {
       this.checkIfDead();
       this.updateCurrentAnimationSequence();
