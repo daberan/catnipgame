@@ -6,8 +6,10 @@ class World {
   keyboard;
   camera_x = 0;
   isCollisionEnabled = true;
+  blobmaster;
   hud = new Hud();
   shit = [];
+  ball = [];
   lastCharacterDirection = 1;
   backgrounds = [
     {
@@ -53,6 +55,7 @@ class World {
     this.setWorld();
     this.checkCollisions();
     this.checkThrowObjects();
+    this.blobmaster = this.level.enemies.find((enemy) => enemy instanceof Blobmaster);
 
     let theme = new Audio("./audio/Thunderbirds.wav");
     theme.loop = true;
@@ -89,6 +92,7 @@ class World {
 
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.shit);
+    this.addObjectsToMap(this.ball);
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.hud);
@@ -198,7 +202,7 @@ class World {
     let obj2Height = obj2.height;
     let obj2Y = obj2.y;
 
-    if (obj2 instanceof Blob || obj2 instanceof Blobmaster) {
+    if (obj2 instanceof Blob || obj2 instanceof Blobmaster || obj2 instanceof Ball) {
       obj2Height = obj2.height * 0.7;
       obj2Y = obj2.y + (obj2.height - obj2Height);
     }
@@ -239,6 +243,18 @@ class World {
           this.enableCollision();
         }
       });
+
+      this.ball.forEach((ball) => {
+        if (this.isColliding(this.character, ball)) {
+          this.isCollisionEnabled = false;
+          this.handleCharacterHit(0);
+          this.character.jump();
+          this.character.character_hurt_sound.play();
+          this.hud.setHealthBarImage(this.character.characterEnergy);
+          this.enableCollision();
+          this.ball = [];
+        }
+      });
     }, 10);
   }
 
@@ -249,12 +265,17 @@ class World {
   }
 
   checkThrowObjects() {
-    let shitCooldown = false;
+    this.checkShitThrow();
+    this.checkBallThrow();
+  }
 
+  checkShitThrow() {
+    let shitCooldown = false;
     setInterval(() => {
       if (this.keyboard.P && !shitCooldown) {
         let poop = new Shit(this.character.x, this.character.y, this.checkCharacterDirection());
         this.shit.push(poop);
+        console.log(this.shit);
 
         shitCooldown = true;
         setTimeout(() => {
@@ -262,6 +283,28 @@ class World {
         }, 500);
       }
     }, 10);
+  }
+
+  checkBallThrow() {
+    let ballCooldown = false;
+    setInterval(() => {
+      if (!ballCooldown && !this.blobmaster.isDead) {
+        let flyBall = new Ball(this.blobmaster.x, this.blobmaster.y + this.blobmaster.height / 2, this.character);
+        this.ball.push(flyBall);
+        this.killBall();
+
+        ballCooldown = true;
+        setTimeout(() => {
+          ballCooldown = false;
+        }, 3000);
+      }
+    }, 10);
+  }
+
+  killBall() {
+    setTimeout(() => {
+      this.ball = [];
+    }, 3000);
   }
 
   checkCharacterDirection() {
@@ -281,6 +324,7 @@ class World {
     this.reduceCharacterEnergy();
     this.character.character_hurt_sound.play();
     this.character.isHurt = true;
+
     if (this.character.characterEnergy <= 0) {
       this.killCharacter();
     }

@@ -7,12 +7,13 @@ class Blobmaster extends MovableObject {
   height = 64;
   width = 64;
   y = 67;
-  health = 60;
+  health = 100;
   isHurt = false;
   isDead = false;
   currentSequence = this.sequence_idle;
   walkDirection = 1;
   blobmasterX = 1;
+  speed = 50;
 
   audioContext = new AudioContext();
   gainNode = this.audioContext.createGain();
@@ -24,7 +25,6 @@ class Blobmaster extends MovableObject {
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dying);
 
-    this.speed = Math.floor(Math.random() * 7) + 6;
     this.x = Math.round(100 + Math.random() * 150);
 
     this.blob_bounce_sound = new Audio("./audio/bounce3.wav");
@@ -60,7 +60,13 @@ class Blobmaster extends MovableObject {
   }
 
   animate() {
-    this.moveLeft(1000 / this.speed);
+    this.move(1000 / this.speed);
+
+    setInterval(() => {
+      if (!this.isDead) {
+        this.rushAttack();
+      }
+    }, 2000);
     setInterval(() => {
       this.blobmasterX = this.x;
       this.checkIfDead();
@@ -96,5 +102,41 @@ class Blobmaster extends MovableObject {
       this.isHurt = false;
       this.isDead = true;
     }
+  }
+
+  rushAttack() {
+    if (this.isRushing) return; // Prevent multiple rushes at once
+
+    this.isRushing = true;
+    let speed = 0;
+    const maxSpeed = 9;
+    const acceleration = 0.5;
+    const deceleration = 0.3;
+    let direction = this.getCharacterX() > this.x ? 1 : -1; // Rush towards character
+    let isAccelerating = true;
+
+    const rushInterval = setInterval(() => {
+      if (isAccelerating) {
+        // Acceleration phase
+        if (speed < maxSpeed) {
+          speed += acceleration;
+        } else {
+          isAccelerating = false;
+        }
+      } else {
+        // Deceleration phase
+        if (speed > 0) {
+          speed -= deceleration;
+        } else {
+          // Stop rushing
+          speed = 0;
+          this.isRushing = false;
+          clearInterval(rushInterval);
+          return;
+        }
+      }
+
+      this.x += speed * direction;
+    }, 20);
   }
 }

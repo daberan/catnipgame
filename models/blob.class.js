@@ -55,7 +55,7 @@ class Blob extends MovableObject {
   }
 
   animate() {
-    this.moveLeft(250 / this.speed);
+    this.move(250 / this.speed);
     setInterval(() => {
       this.checkIfDead();
       this.updateCurrentAnimationSequence();
