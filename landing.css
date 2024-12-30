@@ -1,0 +1,149 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  background: linear-gradient(180deg, #ae9bff 43.14%, #7bc4cf 100%);
+}
+
+@font-face {
+  font-family: Inter;
+  src: url("./fonts/Inter.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Caveat;
+  src: url("./fonts/Caveat.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.mainWrapper {
+  display: flex;
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  max-width: 1440px;
+  overflow-y: hidden;
+}
+
+nav {
+  display: flex;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 24px;
+  height: 64px;
+  width: 860px;
+  background: rgba(217, 217, 217, 0.1);
+
+  border-radius: 23px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(4px);
+  box-shadow: 0px 0px 2.3px 0px rgba(0, 0, 0, 0.1), 0px 0px 7.6px 0px rgba(0, 0, 0, 0.1);
+}
+
+.logoWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  height: 100%;
+}
+
+.catnip {
+  font-family: Caveat;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40.32px;
+  letter-spacing: -0.05em;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+.catnipImage {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(150px) scale(0.8);
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1440px;
+
+  margin-top: 200px;
+}
+
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title1 {
+  font-family: "Inter";
+  font-size: 112px;
+  font-weight: 500;
+  line-height: 135.55px;
+  letter-spacing: -0.05em;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+.title2 {
+  font-family: "Caveat";
+  font-size: 153px;
+  font-weight: bold;
+}
+
+.paragraph {
+  font-family: "Inter";
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 31.47px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  margin: 0;
+}
+
+.button {
+  display: flex;
+  padding: 12px 28px;
+  margin-top: 55px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 39px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: linear-gradient(61deg, #000 19.72%, #484848 119%);
+  box-shadow: -4px 4px 9.2px 0px rgba(0, 0, 0, 0.2), -0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.35);
+  width: 210px;
+  max-height: 60px;
+  cursor: pointer;
+}
+
+.buttonText {
+  color: white;
+  font-family: "Inter";
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 33.89px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  cursor: pointer;
+}

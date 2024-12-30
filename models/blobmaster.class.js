@@ -7,7 +7,7 @@ class Blobmaster extends MovableObject {
   height = 64;
   width = 64;
   y = 67;
-  health = 100;
+  health = 200;
   isHurt = false;
   isDead = false;
   currentSequence = this.sequence_idle;
@@ -105,8 +105,7 @@ class Blobmaster extends MovableObject {
   }
 
   rushAttack() {
-    if (this.isRushing) return; // Prevent multiple rushes at once
-
+    if (this.isRushing || this.health <= 10) return;
     this.isRushing = true;
     let speed = 0;
     const maxSpeed = 9;

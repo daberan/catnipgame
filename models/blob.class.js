@@ -3,7 +3,7 @@ class Blob extends MovableObject {
   sequence_hurt = ["./img/enemies/blob/hurt/blob_hurt1.png", "./img/enemies/blob/hurt/blob_hurt2.png"];
   sequence_dying = ["./img/enemies/blob/dead/blob_dead1.png", "./img/enemies/blob/dead/blob_dead2.png"];
   currentImage = Math.floor(Math.random() * 6);
-  y = 100;
+  y = -100;
   world;
   health = 20;
   currentSequence = this.sequence_idle;
@@ -25,6 +25,7 @@ class Blob extends MovableObject {
     track.connect(this.pannerNode);
     this.pannerNode.connect(this.gainNode);
     this.gainNode.connect(this.audioContext.destination);
+    this.applyGravity();
 
     this.animate();
   }
@@ -41,16 +42,14 @@ class Blob extends MovableObject {
     const distance = Math.abs(this.x - characterX);
     const maxDistance = 300;
 
-    // Volume based on distance
     let volume = (1 - distance / maxDistance) * 0.3;
     volume = Math.max(0, Math.min(1, volume));
     this.gainNode.gain.value = volume;
 
-    // Stereo panning based on position
     const panMaxDistance = 200;
     const relativeX = this.x - characterX;
     let panValue = relativeX / panMaxDistance;
-    panValue = Math.max(-1, Math.min(1, panValue)) * 0.7; // 70% max panning
+    panValue = Math.max(-1, Math.min(1, panValue)) * 0.7;
     this.pannerNode.pan.value = panValue;
   }
 
@@ -63,7 +62,6 @@ class Blob extends MovableObject {
       let path = this.currentSequence[i];
       this.img = this.imageCache[path];
 
-      // Play bounce sound when blob is at the bottom of its animation
       if (i === 3) {
         if (this.audioContext.state === "suspended") {
           this.audioContext.resume();
@@ -71,7 +69,6 @@ class Blob extends MovableObject {
         this.updateAudio();
         this.blob_bounce_sound.play();
       }
-
       this.currentImage++;
     }, 75);
   }

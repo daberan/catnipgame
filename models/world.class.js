@@ -217,45 +217,76 @@ class World {
         if (this.isColliding(this.character, enemy)) {
           this.isCollisionEnabled = false;
           let sound = this.character.character_enemyJump_sound;
+          this.handleRightCollision(enemy);
+          this.handleLeftCollision(enemy);
+          this.handleBottomCollision(enemy);
 
-          if (this.checkCollisionSide(enemy) == "rightCollision") {
-            this.handleCharacterHit(-1);
+          if (this.checkCollisionSide(enemy, this.character) == "rightCollision" || this.checkCollisionSide(enemy, this.character) == "leftCollision") {
             sound = this.character.character_hurt_sound;
           }
-
-          if (this.checkCollisionSide(enemy) == "leftCollision") {
-            this.handleCharacterHit(1);
-            sound = this.character.character_hurt_sound;
-          }
-
-          if (this.checkCollisionSide(enemy) == "bottomCollision") {
-            sound = this.character.character_enemyJump_sound;
-            enemy.health -= 10;
-            enemy.isHurt = true;
-            setTimeout(() => {
-              enemy.isHurt = false;
-            }, 450);
-            this.killEnemy(enemy);
-          }
-
           this.character.jump(sound);
           this.hud.setHealthBarImage(this.character.characterEnergy);
           this.enableCollision();
         }
       });
+      this.checkFireballCollisions();
+      this.checkShitCollisions();
+    }, 10);
+  }
 
-      this.ball.forEach((ball) => {
-        if (this.isColliding(this.character, ball)) {
+  handleRightCollision(enemy) {
+    if (this.checkCollisionSide(enemy, this.character) == "rightCollision") {
+      this.handleCharacterHit(-1);
+    }
+  }
+
+  handleLeftCollision(enemy) {
+    if (this.checkCollisionSide(enemy, this.character) == "leftCollision") {
+      this.handleCharacterHit(1);
+    }
+  }
+
+  handleBottomCollision(enemy) {
+    if (this.checkCollisionSide(enemy, this.character) == "bottomCollision") {
+      enemy.health -= 10;
+      enemy.isHurt = true;
+      setTimeout(() => {
+        enemy.isHurt = false;
+      }, 450);
+      this.killEnemy(enemy);
+    }
+  }
+
+  checkShitCollisions() {
+    this.level.enemies.forEach((enemy) => {
+      this.shit.forEach((poop, index) => {
+        if (this.isColliding(poop, enemy)) {
           this.isCollisionEnabled = false;
-          this.handleCharacterHit(0);
-          this.character.jump();
-          this.character.character_hurt_sound.play();
-          this.hud.setHealthBarImage(this.character.characterEnergy);
+          enemy.health -= 10;
+          enemy.isHurt = true;
+          setTimeout(() => {
+            enemy.isHurt = false;
+          }, 450);
+          this.killEnemy(enemy);
           this.enableCollision();
-          this.ball = [];
+          this.shit.splice(index, 1);
         }
       });
-    }, 10);
+    });
+  }
+
+  checkFireballCollisions() {
+    this.ball.forEach((ball) => {
+      if (this.isColliding(this.character, ball)) {
+        this.isCollisionEnabled = false;
+        this.handleCharacterHit(0);
+        this.character.jump();
+        this.character.character_hurt_sound.play();
+        this.hud.setHealthBarImage(this.character.characterEnergy);
+        this.enableCollision();
+        this.ball = [];
+      }
+    });
   }
 
   enableCollision() {
@@ -287,6 +318,7 @@ class World {
 
   checkBallThrow() {
     let ballCooldown = false;
+
     setInterval(() => {
       if (!ballCooldown && !this.blobmaster.isDead) {
         let flyBall = new Ball(this.blobmaster.x, this.blobmaster.y + this.blobmaster.height / 2, this.character);
@@ -296,7 +328,7 @@ class World {
         ballCooldown = true;
         setTimeout(() => {
           ballCooldown = false;
-        }, 3000);
+        }, 4000);
       }
     }, 10);
   }
@@ -304,7 +336,7 @@ class World {
   killBall() {
     setTimeout(() => {
       this.ball = [];
-    }, 3000);
+    }, 4000);
   }
 
   checkCharacterDirection() {
@@ -324,7 +356,6 @@ class World {
     this.reduceCharacterEnergy();
     this.character.character_hurt_sound.play();
     this.character.isHurt = true;
-
     if (this.character.characterEnergy <= 0) {
       this.killCharacter();
     }
@@ -338,23 +369,21 @@ class World {
 
   killCharacter() {
     this.character.isDead = true;
-
     setTimeout(() => {
       this.character.isDead = false;
     }, 2000);
   }
 
-  checkCollisionSide(enemy) {
-    if (this.character.y < enemy.y + enemy.height && this.character.isAboveGround()) {
+  checkCollisionSide(enemy, obj1) {
+    if (obj1.y < enemy.y + enemy.height && obj1.isAboveGround()) {
       console.log("bottomCollision");
-
       return "bottomCollision";
     }
-    if (this.character.x < enemy.x && !this.character.isAboveGround()) {
+    if (obj1.x < enemy.x && !obj1.isAboveGround()) {
       console.log("rightCollision");
       return "rightCollision";
     }
-    if (this.character.x > enemy.x && !this.character.isAboveGround()) {
+    if (obj1.x > enemy.x && !obj1.isAboveGround()) {
       console.log("leftCollision");
       return "leftCollision";
     }

@@ -2,7 +2,7 @@ class Ball extends MovableObject {
   width = 16;
   height = 16;
   speedX = 0;
-  homingSpeed = 3;
+  homingSpeed = 2;
 
   constructor(x, y, target) {
     super().loadImage("./img/enemies/ball/ball1.png");
@@ -27,6 +27,6 @@ class Ball extends MovableObject {
           this.y += Math.round((dy / distance) * this.homingSpeed);
         }
       }
-    }, 30);
+    }, 20);
   }
 }
