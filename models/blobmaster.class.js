@@ -7,7 +7,7 @@ class Blobmaster extends MovableObject {
   height = 64;
   width = 64;
   y = 67;
-  health = 200;
+  health = 120;
   isHurt = false;
   isDead = false;
   currentSequence = this.sequence_idle;

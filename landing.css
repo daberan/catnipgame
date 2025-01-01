@@ -7,6 +7,7 @@ body {
   justify-content: center;
   margin: 0;
   background: linear-gradient(180deg, #ae9bff 43.14%, #7bc4cf 100%);
+  overflow: hidden;
 }
 
 @font-face {
@@ -39,9 +40,9 @@ nav {
   transform: translateX(-50%);
   top: 24px;
   height: 64px;
-  width: 860px;
+  width: calc(100% - 64px);
+  max-width: 860px;
   background: rgba(217, 217, 217, 0.1);
-
   border-radius: 23px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(4px);
@@ -69,10 +70,18 @@ nav {
   text-decoration-skip-ink: none;
 }
 
+.catWrapper {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(1000px);
+  animation: slideUpCat 1s cubic-bezier(0, 0.539, 0.162, 1) forwards;
+  animation-delay: 0.25s;
+}
+
 .catnipImage {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%) translateY(150px) scale(0.8);
+  transform: translateX(-50%) translateY(-745px) scale(0.85);
 }
 
 .contentWrapper {
@@ -81,8 +90,7 @@ nav {
   align-items: center;
   width: 100%;
   max-width: 1440px;
-
-  margin-top: 200px;
+  margin-top: 120px;
 }
 
 .textWrapper {
@@ -90,13 +98,16 @@ nav {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 0 64px;
+  animation: slideUp 0.75s ease-out forwards;
+  text-align: center;
 }
 
 .title1 {
   font-family: "Inter";
   font-size: 112px;
   font-weight: 500;
-  line-height: 135.55px;
+  line-height: unset;
   letter-spacing: -0.05em;
   text-align: center;
   text-underline-position: from-font;
@@ -107,6 +118,7 @@ nav {
   font-family: "Caveat";
   font-size: 153px;
   font-weight: bold;
+  line-height: unset;
 }
 
 .paragraph {
@@ -129,11 +141,21 @@ nav {
   align-items: center;
   border-radius: 39px;
   border: 1px solid rgba(255, 255, 255, 0.11);
-  background: linear-gradient(61deg, #000 19.72%, #484848 119%);
+  background: linear-gradient(61deg, #000 20%, #484848 120%);
+  background-position: 0 0;
   box-shadow: -4px 4px 9.2px 0px rgba(0, 0, 0, 0.2), -0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.35);
   width: 210px;
   max-height: 60px;
   cursor: pointer;
+  transform: scale(0);
+  animation: button 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 0s;
+  z-index: 999;
+  transition: background-position 0.3s ease;
+}
+
+.button:hover {
+  background-position: 100% 0;
 }
 
 .buttonText {
@@ -146,4 +168,105 @@ nav {
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
   cursor: pointer;
+}
+
+@keyframes button {
+  from {
+    transform: scale(0);
+    /* opacity: 0; */
+  }
+  to {
+    transform: scale(1);
+    /* opacity: 1; */
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpCat {
+  from {
+    transform: translateY(1000px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Small laptops and tablets landscape */
+@media (max-width: 1027px) {
+  /* Your CSS */
+  .title2 {
+    line-height: 80px;
+  }
+}
+
+/* Tablets portrait */
+@media (max-width: 768px) {
+  /* Your CSS */
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+  /* Your CSS */
+}
+
+/* Small mobile devices */
+@media (max-width: 320px) {
+  /* Your CSS */
+}
+
+@media (min-height: 1000px) {
+  .contentWrapper {
+    margin-top: 200px;
+  }
+  .catnipImage {
+    transform: translateX(-50%) translateY(-750px) scale(1);
+  }
+}
+
+@media (min-height: 1250px) {
+  .contentWrapper {
+    margin-top: 230px;
+  }
+  .catnipImage {
+    transform: translateX(-50%) translateY(-550px) scale(1.4);
+  }
+}
+
+@media (min-height: 1500px) {
+  .catnipImage {
+    transform: translateX(-50%) translateY(-500px) scale(1.7);
+  }
+}
+
+@media (min-height: 1700px) {
+  .catWrapper {
+    position: absolute;
+    bottom: 0;
+    transform: translateY(1200px);
+    animation: slideUpCat 1s cubic-bezier(0, 0.539, 0.162, 1) forwards;
+    animation-delay: 0.25s;
+  }
+
+  @keyframes slideUpCat {
+    from {
+      transform: translateY(1200px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .catnipImage {
+    transform: translateX(-50%) translateY(-380px) scale(2);
+  }
 }
