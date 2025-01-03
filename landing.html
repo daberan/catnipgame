@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="landing.css" />
+    <script src="https://unpkg.com/@rive-app/canvas"></script>
   </head>
   <body>
     <div class="mainWrapper">
@@ -22,13 +23,14 @@
           </div>
           <p class="paragraph">Enjoy playing the most boring game <br />in the history of gaming.</p>
         </div>
-        <button class="button">
+        <button class="button" onclick="openMouth()">
           <span class="buttonText">Enter Game</span>
         </button>
       </div>
     </div>
     <div class="catWrapper">
-      <img class="catnipImage" src="./img/landing/catnip.png" alt="" />
+      <canvas class="canvas" id="canvas" width="1500" height="1500"></canvas>
     </div>
+    <script src="./rive.js"></script>
   </body>
 </html>

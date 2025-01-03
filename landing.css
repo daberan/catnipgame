@@ -27,10 +27,11 @@ body {
 .mainWrapper {
   display: flex;
   position: relative;
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
   max-width: 1440px;
-  overflow-y: hidden;
+  overflow: hidden;
+  z-index: 2;
 }
 
 nav {
@@ -47,6 +48,19 @@ nav {
   border: 1px solid rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(4px);
   box-shadow: 0px 0px 2.3px 0px rgba(0, 0, 0, 0.1), 0px 0px 7.6px 0px rgba(0, 0, 0, 0.1);
+}
+
+nav.moveUp {
+  animation: navMoveUp 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes navMoveUp {
+  from {
+    top: 24px;
+  }
+  to {
+    top: -200px;
+  }
 }
 
 .logoWrapper {
@@ -76,12 +90,18 @@ nav {
   transform: translateY(1000px);
   animation: slideUpCat 1s cubic-bezier(0, 0.539, 0.162, 1) forwards;
   animation-delay: 0.25s;
+  z-index: 1;
 }
 
-.catnipImage {
+.catWrapper.slide-up-more {
+  animation: slideUpMore 2.25s cubic-bezier(0, 0.539, 0.162, 1) forwards;
+  transform: none;
+}
+.canvas {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%) translateY(-745px) scale(0.85);
+  transform: translateX(-50%) translateY(-450px) scale(1.2);
+  filter: drop-shadow(-3px -20px 40px rgba(0, 0, 0, 0.2));
 }
 
 .contentWrapper {
@@ -144,14 +164,19 @@ nav {
   background: linear-gradient(61deg, #000 20%, #484848 120%);
   background-position: 0 0;
   box-shadow: -4px 4px 9.2px 0px rgba(0, 0, 0, 0.2), -0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.35);
-  width: 210px;
+  width: 240px;
   max-height: 60px;
   cursor: pointer;
   transform: scale(0);
-  animation: button 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: buttonGrow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   animation-delay: 0s;
   z-index: 999;
   transition: background-position 0.3s ease;
+}
+
+.shrinkButton {
+  animation: buttonShrink 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  /* animation-delay: 0.25s; */
 }
 
 .button:hover {
@@ -170,7 +195,7 @@ nav {
   cursor: pointer;
 }
 
-@keyframes button {
+@keyframes buttonGrow {
   from {
     transform: scale(0);
     /* opacity: 0; */
@@ -178,6 +203,15 @@ nav {
   to {
     transform: scale(1);
     /* opacity: 1; */
+  }
+}
+
+@keyframes buttonShrink {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
   }
 }
 
@@ -198,6 +232,12 @@ nav {
   }
   to {
     transform: translateY(0);
+  }
+}
+
+@keyframes slideUpMore {
+  to {
+    transform: translateY(-100px) scale(3);
   }
 }
 
@@ -224,12 +264,21 @@ nav {
   /* Your CSS */
 }
 
+@media (max-height: 800px) {
+  .contentWrapper {
+    margin-top: 100px;
+  }
+  .canvas {
+    transform: translateX(-50%) translateY(-700px) scale(0.65);
+  }
+}
+
 @media (min-height: 1000px) {
   .contentWrapper {
     margin-top: 200px;
   }
-  .catnipImage {
-    transform: translateX(-50%) translateY(-750px) scale(1);
+  .canvas {
+    transform: translateX(-50%) translateY(-800px) scale(0.9);
   }
 }
 
@@ -237,14 +286,14 @@ nav {
   .contentWrapper {
     margin-top: 230px;
   }
-  .catnipImage {
-    transform: translateX(-50%) translateY(-550px) scale(1.4);
+  .canvas {
+    transform: translateX(-50%) translateY(-1050px) scale(1);
   }
 }
 
 @media (min-height: 1500px) {
-  .catnipImage {
-    transform: translateX(-50%) translateY(-500px) scale(1.7);
+  .canvas {
+    transform: translateX(-50%) translateY(-1150px) scale(1.15);
   }
 }
 
@@ -266,7 +315,7 @@ nav {
     }
   }
 
-  .catnipImage {
-    transform: translateX(-50%) translateY(-380px) scale(2);
+  .canvas {
+    transform: translateX(-50%) translateY(-1150px) scale(1.25);
   }
 }
