@@ -5,9 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="landing.css" />
+    <script src="./models/movable-object.class.js"></script>
+    <script src="./models/character.class.js"></script>
+    <script src="./models/blob.class.js"></script>
+    <script src="./models/blobmaster.class.js"></script>
+    <script src="./models/cloud.class.js"></script>
+    <script src="./models/world.class.js"></script>
+    <script src="./models/background-object.class.js"></script>
+    <script src="./models/hud.class.js"></script>
+    <script src="./models/shit.class.js"></script>
+    <script src="./models/ball.class.js"></script>
+    <script src="./models/keyboard.class.js"></script>
+    <script src="./models/level.class.js"></script>
+    <script src="./levels/level1.js"></script>
+    <script src="./js/game.js"></script>
     <script src="https://unpkg.com/@rive-app/canvas"></script>
   </head>
   <body>
+    <canvas class="canvasGame" onclick="toggleCollisionframes()" id="canvasGame" width="720" height="480"> </canvas>
+    <div class="tongue">
+      <img src="./img/landing/tongue.svg" alt="" />
+    </div>
+    <div class="blackScreen"></div>
     <div class="mainWrapper">
       <nav>
         <div class="logoWrapper">

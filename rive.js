@@ -33,17 +33,16 @@ const r = new rive.Rive({
           if (blink) {
             blink.fire();
           }
-          scheduleNextBlink(); // Schedule next blink
+          scheduleNextBlink();
         }, delay);
       };
 
-      scheduleNextBlink(); // Start the first blink cycle
+      scheduleNextBlink();
     }
 
     randomBlink();
 
     document.addEventListener("click", () => {
-      // Fire the trigger instead of setting a value
       blink.fire();
     });
 
@@ -57,4 +56,22 @@ function openMouth() {
   document.querySelector(".catWrapper").classList.add("slide-up-more");
   document.querySelector(".button").classList.add("shrinkButton");
   document.querySelector("nav").classList.add("moveUp");
+  document.querySelector(".textWrapper").classList.add("textWrapperSlideUpMore");
+  document.querySelector(".tongue").classList.add("lick");
+
+  setTimeout(() => {
+    document.querySelector(".blackScreen").classList.add("maskShow");
+  }, 900);
+
+  setTimeout(() => {
+    document.querySelector(".catWrapper").classList.add("displayNone");
+    document.querySelector(".blackScreen").classList.add("maskGrow");
+    document.querySelector(".blackScreen").classList.add("blackScreen-initial");
+    document.querySelector("body").classList.add("backgroundWhite");
+    init();
+    document.querySelector(".canvasGame").classList.add("show");
+  }, 1000);
+  setTimeout(() => {
+    document.querySelector(".blackScreen").remove();
+  }, 2500);
 }

@@ -10,7 +10,7 @@ function toggleCollisionframes() {
 }
 
 function init() {
-  canvas = document.getElementById("canvas");
+  canvas = document.getElementById("canvasGame");
 
   canvas.width = 320;
   canvas.height = 180;

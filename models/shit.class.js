@@ -1,6 +1,6 @@
 class Shit extends MovableObject {
-  width = 8;
-  height = 8;
+  width = 16;
+  height = 16;
   speedX = 2;
 
   constructor(x, y, direction) {

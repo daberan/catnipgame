@@ -1,13 +1,20 @@
 * {
   box-sizing: border-box;
+  --canvasSizeMult: 4;
 }
 
 body {
   display: flex;
   justify-content: center;
+  position: relative;
   margin: 0;
   background: linear-gradient(180deg, #ae9bff 43.14%, #7bc4cf 100%);
   overflow: hidden;
+  transition: background 1s;
+}
+
+.backgroundWhite {
+  background: linear-gradient(180deg, #ffffff 43.14%, #ffffff 100%);
 }
 
 @font-face {
@@ -22,6 +29,36 @@ body {
   src: url("./fonts/Caveat.ttf");
   font-weight: 400;
   font-style: normal;
+}
+
+.tongue {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  /* Add explicit initial state */
+  bottom: -750px;
+  transform: scale(0) rotate(-5deg);
+  z-index: 999999;
+}
+
+.tongue.lick {
+  animation: lick 2.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+@keyframes lick {
+  0% {
+    bottom: -750px;
+    transform: scale(0) rotate(-5deg);
+  }
+  50% {
+    bottom: 0px;
+    transform: scale(3) rotate(5deg);
+  }
+
+  100% {
+    bottom: -2000px;
+    transform: scale(7) rotate(0deg);
+  }
 }
 
 .mainWrapper {
@@ -85,6 +122,7 @@ nav.moveUp {
 }
 
 .catWrapper {
+  display: unset;
   position: absolute;
   bottom: 0;
   transform: translateY(1000px);
@@ -94,9 +132,14 @@ nav.moveUp {
 }
 
 .catWrapper.slide-up-more {
-  animation: slideUpMore 2.25s cubic-bezier(0, 0.539, 0.162, 1) forwards;
+  animation: slideCatUpMore 2.25s cubic-bezier(0, 0.539, 0.162, 1);
   transform: none;
 }
+
+.displayNone {
+  display: none;
+}
+
 .canvas {
   position: absolute;
   left: 50%;
@@ -121,6 +164,19 @@ nav.moveUp {
   padding: 0 64px;
   animation: slideUp 0.75s ease-out forwards;
   text-align: center;
+}
+
+.textWrapper.textWrapperSlideUpMore {
+  animation: textWrapperSlideUpMore 0.25s ease-out forwards;
+}
+
+@keyframes textWrapperSlideUpMore {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-1000px);
+  }
 }
 
 .title1 {
@@ -175,7 +231,7 @@ nav.moveUp {
 }
 
 .shrinkButton {
-  animation: buttonShrink 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: buttonShrink 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   /* animation-delay: 0.25s; */
 }
 
@@ -193,6 +249,39 @@ nav.moveUp {
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
   cursor: pointer;
+}
+
+.blackScreen {
+  opacity: 0;
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  overflow: visible;
+  background-color: black;
+  z-index: 2;
+  -webkit-mask-image: linear-gradient(black, black), url("./img/landing/mask.svg");
+  mask-image: linear-gradient(black, black), url("./img/landing/mask.svg");
+  -webkit-mask-size: 100%, 5%;
+  mask-size: 100%, 5%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-composite: exclude;
+  mask-composite: exclude;
+  transition: -webkit-mask-size 1.5s cubic-bezier(1, 0, 1, 0.867), mask-size 1.5s cubic-bezier(0.652, 0, 0.9, 0.633), opacity 1ms, transform 1.5s cubic-bezier(0.652, 0, 0.9, 0.633);
+  transform: scale(1) translateY(0);
+  transform-origin: center;
+}
+
+.blackScreen.maskShow {
+  opacity: 1;
+}
+
+.blackScreen.maskGrow {
+  -webkit-mask-size: 100%, 100%;
+  mask-size: 100%, 100%;
+  transform: scale(5) translateY(-20%);
 }
 
 @keyframes buttonGrow {
@@ -235,10 +324,27 @@ nav.moveUp {
   }
 }
 
-@keyframes slideUpMore {
+@keyframes slideCatUpMore {
   to {
-    transform: translateY(-100px) scale(3);
+    transform: translateY(-100px) scale(5);
   }
+}
+
+.canvasGame {
+  display: none;
+  position: absolute;
+  background-color: rgb(40, 40, 40);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  width: calc(320px * var(--canvasSizeMult));
+  height: calc(180px * var(--canvasSizeMult));
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.show {
+  display: unset;
 }
 
 /* Small laptops and tablets landscape */
@@ -302,7 +408,7 @@ nav.moveUp {
     position: absolute;
     bottom: 0;
     transform: translateY(1200px);
-    animation: slideUpCat 1s cubic-bezier(0, 0.539, 0.162, 1) forwards;
+    animation: slideUpCat 1s cubic-bezier(0, 0.539, 0.162, 1);
     animation-delay: 0.25s;
   }
 

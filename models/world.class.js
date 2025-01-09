@@ -8,8 +8,11 @@ class World {
   isCollisionEnabled = true;
   blobmaster;
   hud = new Hud();
+  shitCounter = new ShitCounter();
   shit = [];
   ball = [];
+  collectibleShit = [];
+  shitAmmo = 4;
   lastCharacterDirection = 1;
   backgrounds = [
     {
@@ -51,6 +54,7 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.spawnCollectibleShit();
     this.draw();
     this.setWorld();
     this.checkCollisions();
@@ -77,18 +81,13 @@ class World {
   }
 
   draw() {
-    this.drawBackgroundSky();
-    this.drawFarBackClouds();
-    this.drawMiddleClouds();
-    this.drawBackgroundMountains();
-    this.drawMountains();
-    this.drawHills();
-    this.drawMainGround();
+    this.handleBackgrounds(0);
 
     this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.collectibleShit);
     this.addToMap(this.character);
 
-    this.drawForeground();
+    this.handleBackgrounds(7);
 
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.shit);
@@ -96,6 +95,7 @@ class World {
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.hud);
+    this.addToMap(this.shitCounter);
 
     requestAnimationFrame(() => {
       this.draw();
@@ -115,38 +115,11 @@ class World {
     }
   }
 
-  drawBackgroundSky() {
-    this.drawBackground(this.backgrounds[0]);
+  handleBackgrounds(start) {
+    for (let index = start; index < this.backgrounds.length; index++) {
+      this.drawBackground(this.backgrounds[index]);
+    }
   }
-
-  drawFarBackClouds() {
-    this.drawBackground(this.backgrounds[1]);
-  }
-
-  drawMiddleClouds() {
-    this.drawBackground(this.backgrounds[2]);
-  }
-
-  drawBackgroundMountains() {
-    this.drawBackground(this.backgrounds[3]);
-  }
-
-  drawMountains() {
-    this.drawBackground(this.backgrounds[4]);
-  }
-
-  drawHills() {
-    this.drawBackground(this.backgrounds[5]);
-  }
-
-  drawMainGround() {
-    this.drawBackground(this.backgrounds[6]);
-  }
-
-  drawForeground() {
-    this.drawBackground(this.backgrounds[7]);
-  }
-
   addObjectsToMap(objects) {
     objects.forEach((o) => {
       this.addToMap(o);
@@ -231,6 +204,7 @@ class World {
       });
       this.checkFireballCollisions();
       this.checkShitCollisions();
+      this.checkShitCollection();
     }, 10);
   }
 
@@ -264,6 +238,7 @@ class World {
           this.isCollisionEnabled = false;
           enemy.health -= 10;
           enemy.isHurt = true;
+          new Audio("./audio/coin.wav").play();
           setTimeout(() => {
             enemy.isHurt = false;
           }, 450);
@@ -303,10 +278,12 @@ class World {
   checkShitThrow() {
     let shitCooldown = false;
     setInterval(() => {
-      if (this.keyboard.P && !shitCooldown) {
+      if (this.keyboard.P && !shitCooldown && this.shitAmmo > 0) {
         let poop = new Shit(this.character.x, this.character.y, this.checkCharacterDirection());
         this.shit.push(poop);
-        console.log(this.shit);
+        this.shitAmmo--;
+        new Audio("./audio/throw.wav").play();
+        this.shitCounter.setShitCounterImage(this.shitAmmo);
 
         shitCooldown = true;
         setTimeout(() => {
@@ -387,5 +364,22 @@ class World {
       console.log("leftCollision");
       return "leftCollision";
     }
+  }
+
+  spawnCollectibleShit() {
+    for (let index = 0; index < 6; index++) {
+      this.collectibleShit.push(new CollectibleShit());
+    }
+  }
+
+  checkShitCollection() {
+    this.collectibleShit.forEach((shit, index) => {
+      if (this.isColliding(this.character, shit)) {
+        this.collectibleShit.splice(index, 1);
+        this.shitAmmo++;
+        new Audio("./audio/coin.wav").play();
+        this.shitCounter.setShitCounterImage(this.shitAmmo);
+      }
+    });
   }
 }
