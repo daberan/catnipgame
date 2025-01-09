@@ -76,7 +76,9 @@ class MovableObject {
     if (!sound) {
       return;
     }
-    sound.play();
+    if (!this.world.muted) {
+      sound.play();
+    }
   }
 
   accelerateOnX(speed, maxDistance = 50) {

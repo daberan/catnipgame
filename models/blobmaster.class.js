@@ -7,7 +7,7 @@ class Blobmaster extends MovableObject {
   height = 64;
   width = 64;
   y = 67;
-  health = 120;
+  health = 160;
   isHurt = false;
   isDead = false;
   currentSequence = this.sequence_idle;
@@ -25,7 +25,7 @@ class Blobmaster extends MovableObject {
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dying);
 
-    this.x = Math.round(100 + Math.random() * 150);
+    this.x = Math.round(1000 + Math.random() * 150);
 
     this.blob_bounce_sound = new Audio("./audio/bounce3.wav");
     const track = this.audioContext.createMediaElementSource(this.blob_bounce_sound);
@@ -61,7 +61,6 @@ class Blobmaster extends MovableObject {
 
   animate() {
     this.move(1000 / this.speed);
-
     setInterval(() => {
       if (!this.isDead) {
         this.rushAttack();
@@ -80,7 +79,9 @@ class Blobmaster extends MovableObject {
           this.audioContext.resume();
         }
         this.updateAudio();
-        this.blob_bounce_sound.play();
+        if (!this.world.muted) {
+          this.blob_bounce_sound.play();
+        }
       }
 
       this.currentImage++;
@@ -111,30 +112,26 @@ class Blobmaster extends MovableObject {
     const maxSpeed = 9;
     const acceleration = 0.5;
     const deceleration = 0.3;
-    let direction = this.getCharacterX() > this.x ? 1 : -1; // Rush towards character
+    let direction = this.getCharacterX() > this.x ? 1 : -1;
     let isAccelerating = true;
 
     const rushInterval = setInterval(() => {
       if (isAccelerating) {
-        // Acceleration phase
         if (speed < maxSpeed) {
           speed += acceleration;
         } else {
           isAccelerating = false;
         }
       } else {
-        // Deceleration phase
         if (speed > 0) {
           speed -= deceleration;
         } else {
-          // Stop rushing
           speed = 0;
           this.isRushing = false;
           clearInterval(rushInterval);
           return;
         }
       }
-
       this.x += speed * direction;
     }, 20);
   }

@@ -6,93 +6,75 @@ class World {
   keyboard;
   camera_x = 0;
   isCollisionEnabled = true;
-  blobmaster;
+  blobmaster = null;
   hud = new Hud();
   shitCounter = new ShitCounter();
   shit = [];
   ball = [];
   collectibleShit = [];
-  shitAmmo = 4;
-  lastCharacterDirection = 1;
-  backgrounds = [
-    {
-      cameraxDivider: 0,
-      imageSrcName: "sky.png",
-    },
-    {
-      cameraxDivider: 1000,
-      imageSrcName: "background-clouds2.png",
-    },
-    {
-      cameraxDivider: 200,
-      imageSrcName: "background-clouds1.png",
-    },
-    {
-      cameraxDivider: 20,
-      imageSrcName: "mountains2.png",
-    },
-    {
-      cameraxDivider: 6,
-      imageSrcName: "mountains1.png",
-    },
-    {
-      cameraxDivider: 3,
-      imageSrcName: "/ground2.png",
-    },
-    {
-      cameraxDivider: 1,
-      imageSrcName: "/ground_new.png",
-      noTranslateBack: true,
-    },
-    {
-      cameraxDivider: 1,
-      imageSrcName: "/foreground2.png",
-    },
-  ];
+  theme;
+  bossTheme;
+  muted = false;
+  hasPlayedBossMusic = false;
+  backgrounds = BACKGROUNDS;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+
     this.spawnCollectibleShit();
     this.draw();
     this.setWorld();
     this.checkCollisions();
-    this.checkThrowObjects();
-    this.blobmaster = this.level.enemies.find((enemy) => enemy instanceof Blobmaster);
+    this.checkBallThrow();
+    this.checkForBossSpawn();
 
-    let theme = new Audio("./audio/Thunderbirds.wav");
-    theme.loop = true;
+    this.theme = new Audio("./audio/Thunderbirds.wav");
+    this.bossTheme = new Audio("./audio/TheBloop.wav");
+    this.theme.loop = true;
+    this.bossTheme.loop = true;
 
     document.addEventListener(
       "keydown",
       () => {
-        theme.play();
+        if (!this.muted) {
+          this.theme.play();
+        }
       },
       { once: true }
     );
-  }
 
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "m" || e.key === "M") {
+        this.toggleMusic();
+      }
+    });
+  }
   setWorld() {
     this.character.world = this;
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
     });
+    this.character.initializeCharacter();
+  }
+
+  toggleMusic() {
+    this.muted = !this.muted;
+    this.theme.volume = this.muted ? 0 : 1;
+    this.bossTheme.volume = this.muted ? 0 : 1;
   }
 
   draw() {
-    this.handleBackgrounds(0);
+    this.handleBackgroundDrawing(0);
 
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.collectibleShit);
     this.addToMap(this.character);
-
-    this.handleBackgrounds(7);
-
+    this.handleBackgroundDrawing(7);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.shit);
     this.addObjectsToMap(this.ball);
-
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.hud);
     this.addToMap(this.shitCounter);
@@ -115,11 +97,12 @@ class World {
     }
   }
 
-  handleBackgrounds(start) {
+  handleBackgroundDrawing(start) {
     for (let index = start; index < this.backgrounds.length; index++) {
       this.drawBackground(this.backgrounds[index]);
     }
   }
+
   addObjectsToMap(objects) {
     objects.forEach((o) => {
       this.addToMap(o);
@@ -154,6 +137,24 @@ class World {
     }, 500);
   }
 
+  checkForBossSpawn() {
+    setInterval(() => {
+      if (!this.blobmaster && this.level.enemies.every((enemy) => enemy instanceof Blob === false)) {
+        if (!this.hasPlayedBossMusic) {
+          this.theme.pause();
+          this.theme.currentTime = 0;
+
+          this.bossTheme.play();
+
+          this.hasPlayedBossMusic = true;
+        }
+        this.blobmaster = new Blobmaster();
+        this.blobmaster.world = this;
+        this.level.enemies.push(this.blobmaster);
+      }
+    }, 1000);
+  }
+
   drawCollisionBox(obj) {
     if (obj instanceof BackgroundObject || obj instanceof Cloud || obj instanceof Hud) {
       return;
@@ -184,17 +185,14 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
-      if (!this.isCollisionEnabled) return;
-
+      if (!this.isCollisionEnabled || this.character.isDead) return;
       this.level.enemies.forEach((enemy) => {
         if (this.isColliding(this.character, enemy)) {
           this.isCollisionEnabled = false;
           let sound = this.character.character_enemyJump_sound;
-          this.handleRightCollision(enemy);
-          this.handleLeftCollision(enemy);
-          this.handleBottomCollision(enemy);
+          this.handleDifferentCollisionSides(enemy);
 
-          if (this.checkCollisionSide(enemy, this.character) == "rightCollision" || this.checkCollisionSide(enemy, this.character) == "leftCollision") {
+          if (this.checkCollisionSide(enemy, this.character) == "rightCollision" || this.checkCollisionSide(enemy, this.character) == "leftCollision" || this.checkCollisionSide(enemy, this.character) == "topCollision") {
             sound = this.character.character_hurt_sound;
           }
           this.character.jump(sound);
@@ -208,15 +206,28 @@ class World {
     }, 10);
   }
 
+  handleDifferentCollisionSides(enemy) {
+    this.handleRightCollision(enemy);
+    this.handleLeftCollision(enemy);
+    this.handleBottomCollision(enemy);
+    this.handleTopCollision(enemy);
+  }
+
   handleRightCollision(enemy) {
     if (this.checkCollisionSide(enemy, this.character) == "rightCollision") {
-      this.handleCharacterHit(-1);
+      this.character.handleHit(-1);
     }
   }
 
   handleLeftCollision(enemy) {
     if (this.checkCollisionSide(enemy, this.character) == "leftCollision") {
-      this.handleCharacterHit(1);
+      this.character.handleHit(1);
+    }
+  }
+
+  handleTopCollision(enemy) {
+    if (this.checkCollisionSide(enemy, this.character) == "topCollision") {
+      this.character.handleHit(1);
     }
   }
 
@@ -238,7 +249,10 @@ class World {
           this.isCollisionEnabled = false;
           enemy.health -= 10;
           enemy.isHurt = true;
-          new Audio("./audio/coin.wav").play();
+          if (!this.muted) {
+            new Audio("./audio/coin.wav").play();
+          }
+
           setTimeout(() => {
             enemy.isHurt = false;
           }, 450);
@@ -254,10 +268,7 @@ class World {
     this.ball.forEach((ball) => {
       if (this.isColliding(this.character, ball)) {
         this.isCollisionEnabled = false;
-        this.handleCharacterHit(0);
-        this.character.jump();
-        this.character.character_hurt_sound.play();
-        this.hud.setHealthBarImage(this.character.characterEnergy);
+        this.character.handleHit(0);
         this.enableCollision();
         this.ball = [];
       }
@@ -270,38 +281,13 @@ class World {
     }, 250);
   }
 
-  checkThrowObjects() {
-    this.checkShitThrow();
-    this.checkBallThrow();
-  }
-
-  checkShitThrow() {
-    let shitCooldown = false;
-    setInterval(() => {
-      if (this.keyboard.P && !shitCooldown && this.shitAmmo > 0) {
-        let poop = new Shit(this.character.x, this.character.y, this.checkCharacterDirection());
-        this.shit.push(poop);
-        this.shitAmmo--;
-        new Audio("./audio/throw.wav").play();
-        this.shitCounter.setShitCounterImage(this.shitAmmo);
-
-        shitCooldown = true;
-        setTimeout(() => {
-          shitCooldown = false;
-        }, 500);
-      }
-    }, 10);
-  }
-
   checkBallThrow() {
     let ballCooldown = false;
-
     setInterval(() => {
-      if (!ballCooldown && !this.blobmaster.isDead) {
+      if (this.blobmaster && !ballCooldown && !this.blobmaster.isDead) {
         let flyBall = new Ball(this.blobmaster.x, this.blobmaster.y + this.blobmaster.height / 2, this.character);
         this.ball.push(flyBall);
         this.killBall();
-
         ballCooldown = true;
         setTimeout(() => {
           ballCooldown = false;
@@ -316,45 +302,14 @@ class World {
     }, 4000);
   }
 
-  checkCharacterDirection() {
-    if (this.keyboard.RIGHT) {
-      this.lastCharacterDirection = 1;
-    } else if (this.keyboard.LEFT) {
-      this.lastCharacterDirection = -1;
-    }
-    return this.lastCharacterDirection;
-  }
-
-  reduceCharacterEnergy() {
-    this.character.characterEnergy -= 10;
-  }
-
-  handleCharacterHit(speed) {
-    this.reduceCharacterEnergy();
-    this.character.character_hurt_sound.play();
-    this.character.isHurt = true;
-    if (this.character.characterEnergy <= 0) {
-      this.killCharacter();
-    }
-    setTimeout(() => {
-      this.character.isHurt = false;
-    }, 750);
-    setTimeout(() => {
-      this.character.accelerateOnX(speed);
-    }, 50);
-  }
-
-  killCharacter() {
-    this.character.isDead = true;
-    setTimeout(() => {
-      this.character.isDead = false;
-    }, 2000);
-  }
-
   checkCollisionSide(enemy, obj1) {
     if (obj1.y < enemy.y + enemy.height && obj1.isAboveGround()) {
       console.log("bottomCollision");
       return "bottomCollision";
+    }
+    if (obj1.y + obj1.height > enemy.y && obj1.isAboveGround()) {
+      console.log("topCollision");
+      return "topCollision";
     }
     if (obj1.x < enemy.x && !obj1.isAboveGround()) {
       console.log("rightCollision");
@@ -367,8 +322,10 @@ class World {
   }
 
   spawnCollectibleShit() {
-    for (let index = 0; index < 6; index++) {
-      this.collectibleShit.push(new CollectibleShit());
+    const amount = 7;
+    for (let i = 0; i < amount; i++) {
+      const x = Math.floor(Math.random() * 750) + 180;
+      this.collectibleShit.push(new CollectibleShit(x, 150));
     }
   }
 
@@ -376,9 +333,7 @@ class World {
     this.collectibleShit.forEach((shit, index) => {
       if (this.isColliding(this.character, shit)) {
         this.collectibleShit.splice(index, 1);
-        this.shitAmmo++;
-        new Audio("./audio/coin.wav").play();
-        this.shitCounter.setShitCounterImage(this.shitAmmo);
+        this.character.collectShit();
       }
     });
   }

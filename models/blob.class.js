@@ -5,8 +5,10 @@ class Blob extends MovableObject {
   currentImage = Math.floor(Math.random() * 6);
   y = -100;
   world;
-  health = 20;
+  health = 40;
   currentSequence = this.sequence_idle;
+  canTurn = true;
+  currentDirection = 1; // Track current direction
 
   audioContext = new AudioContext();
   gainNode = this.audioContext.createGain();
@@ -17,8 +19,8 @@ class Blob extends MovableObject {
     this.loadImages(this.sequence_idle);
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dying);
-    this.speed = Math.floor(Math.random() * 10) + 6;
-    this.x = Math.round(100 + Math.random() * 500);
+    this.speed = Math.floor(Math.random() * 20) + 6;
+    this.x = Math.round(500 + Math.random() * 500);
 
     this.blob_bounce_sound = new Audio("./audio/blob_bounce1.wav");
     const track = this.audioContext.createMediaElementSource(this.blob_bounce_sound);
@@ -28,6 +30,24 @@ class Blob extends MovableObject {
     this.applyGravity();
 
     this.animate();
+    this.startRandomJumping();
+  }
+
+  startRandomJumping() {
+    setInterval(() => {
+      if (!this.isDead && !this.isHurt && !this.isAboveGround()) {
+        // Random chance to jump (about 20% chance every check)
+        if (Math.random() < 0.2) {
+          const direction = this.getCharacterX() > this.x ? 1 : -1;
+          this.jumpForward(direction);
+        }
+      }
+    }, 500); // Check every 1.5 seconds
+  }
+
+  jumpForward(direction) {
+    this.speedY = Math.floor(Math.random() * (20 - 5 + 1)) + 5;
+    this.accelerateOnX(5 * direction, 200); // Jump forward in current direction
   }
 
   getCharacterX() {
@@ -54,7 +74,8 @@ class Blob extends MovableObject {
   }
 
   animate() {
-    this.move(250 / this.speed);
+    this.move(7);
+
     setInterval(() => {
       this.checkIfDead();
       this.updateCurrentAnimationSequence();
@@ -81,6 +102,28 @@ class Blob extends MovableObject {
     } else {
       this.currentSequence = this.sequence_idle;
     }
+  }
+
+  move(speed) {
+    setInterval(() => {
+      if (!this.isDead) {
+        const characterX = this.getCharacterX();
+        const newDirection = characterX > this.x ? 1 : -1;
+
+        // Only change direction if we can turn and direction is different
+        if (this.canTurn && newDirection !== this.currentDirection) {
+          this.currentDirection = newDirection;
+          this.canTurn = false;
+
+          // Reset turn ability after 1 second
+          setTimeout(() => {
+            this.canTurn = true;
+          }, 1000);
+        }
+
+        this.x += 1 * this.currentDirection;
+      }
+    }, speed);
   }
 
   checkIfDead() {

@@ -1,43 +1,40 @@
 let canvas;
 let world;
+let startScreen;
+let gameOverScreen;
 let keyboard = new Keyboard();
 let enableCollisionFrames = false;
-let direction = 1;
-
-function toggleCollisionframes() {
-  enableCollisionFrames = !enableCollisionFrames;
-  console.log("Collision frames are: ", enableCollisionFrames);
-}
+let gameStarted = false;
 
 function init() {
   canvas = document.getElementById("canvasGame");
-
   canvas.width = 320;
   canvas.height = 180;
 
-  world = new World(canvas, keyboard);
+  // Show start screen first
+  startScreen = new StartScreen(canvas);
+}
+
+function initializeGame() {
+  if (!gameStarted) {
+    gameStarted = true;
+    world = new World(canvas, keyboard);
+  }
 }
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowUp") {
-    keyboard.UP = true;
-  }
-  if (event.key === "w") {
+  if (!gameStarted) return;
+
+  if (event.key === "ArrowUp" || event.key === "w") {
     keyboard.UP = true;
   }
   if (event.key === "ArrowDown") {
     keyboard.DOWN = true;
   }
-  if (event.key === "ArrowLeft") {
+  if (event.key === "ArrowLeft" || event.key === "a") {
     keyboard.LEFT = true;
   }
-  if (event.key === "a") {
-    keyboard.LEFT = true;
-  }
-  if (event.key === "ArrowRight") {
-    keyboard.RIGHT = true;
-  }
-  if (event.key === "d") {
+  if (event.key === "ArrowRight" || event.key === "d") {
     keyboard.RIGHT = true;
   }
   if (event.key === " ") {
@@ -49,25 +46,18 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keyup", (event) => {
-  if (event.key === "ArrowUp") {
-    keyboard.UP = false;
-  }
-  if (event.key === "w") {
+  if (!gameStarted) return;
+
+  if (event.key === "ArrowUp" || event.key === "w") {
     keyboard.UP = false;
   }
   if (event.key === "ArrowDown") {
     keyboard.DOWN = false;
   }
-  if (event.key === "ArrowLeft") {
+  if (event.key === "ArrowLeft" || event.key === "a") {
     keyboard.LEFT = false;
   }
-  if (event.key === "a") {
-    keyboard.LEFT = false;
-  }
-  if (event.key === "ArrowRight") {
-    keyboard.RIGHT = false;
-  }
-  if (event.key === "d") {
+  if (event.key === "ArrowRight" || event.key === "d") {
     keyboard.RIGHT = false;
   }
   if (event.key === " ") {

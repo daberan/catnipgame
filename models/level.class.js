@@ -6,7 +6,7 @@ class Level {
   shitCounter;
   shit;
   collectibleShit;
-  level_end_x = 720;
+  level_end_x = 865;
 
   constructor(enemies, clouds, backgroundObjects, hud, shitCounter, collectibleShit = []) {
     this.enemies = enemies;
