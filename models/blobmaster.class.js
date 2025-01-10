@@ -61,12 +61,12 @@ class Blobmaster extends MovableObject {
 
   animate() {
     this.move(1000 / this.speed);
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (!this.isDead) {
         this.rushAttack();
       }
     }, 2000);
-    setInterval(() => {
+    setStoppableInterval(() => {
       this.blobmasterX = this.x;
       this.checkIfDead();
       this.updateCurrentAnimationSequence();
@@ -115,7 +115,7 @@ class Blobmaster extends MovableObject {
     let direction = this.getCharacterX() > this.x ? 1 : -1;
     let isAccelerating = true;
 
-    const rushInterval = setInterval(() => {
+    const rushInterval = setStoppableInterval(() => {
       if (isAccelerating) {
         if (speed < maxSpeed) {
           speed += acceleration;

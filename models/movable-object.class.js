@@ -36,7 +36,7 @@ class MovableObject {
   }
 
   move(speed) {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this instanceof Blobmaster) {
         const characterX = this.getCharacterX();
         const direction = characterX > this.x ? 1 : -1;
@@ -50,7 +50,7 @@ class MovableObject {
   }
 
   applyGravity() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       this.setGroundX();
       if (this.isAboveGround() || this.speedY > 0) {
         let newY = this.y - this.speedY;
@@ -90,7 +90,7 @@ class MovableObject {
     this.isKicked = true;
     this.speedX = speed;
 
-    const kickInterval = setInterval(() => {
+    const kickInterval = setStoppableInterval(() => {
       if ((!(this instanceof Shit) && !this.isAboveGround()) || Math.abs(totalDistance) >= maxDistance) {
         this.speedX = 0;
         this.isKicked = false;

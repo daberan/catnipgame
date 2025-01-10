@@ -29,12 +29,16 @@ class Blob extends MovableObject {
     this.gainNode.connect(this.audioContext.destination);
     this.applyGravity();
 
+    this.initializeMovement();
+  }
+
+  initializeMovement() {
     this.animate();
     this.startRandomJumping();
   }
 
   startRandomJumping() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (!this.isDead && !this.isHurt && !this.isAboveGround()) {
         // Random chance to jump (about 20% chance every check)
         if (Math.random() < 0.2) {
@@ -76,7 +80,7 @@ class Blob extends MovableObject {
   animate() {
     this.move(7);
 
-    setInterval(() => {
+    setStoppableInterval(() => {
       this.checkIfDead();
       this.updateCurrentAnimationSequence();
       let i = this.currentImage % this.currentSequence.length;
@@ -88,7 +92,9 @@ class Blob extends MovableObject {
           this.audioContext.resume();
         }
         this.updateAudio();
-        this.blob_bounce_sound.play();
+        if (!this.world.muted) {
+          this.blob_bounce_sound.play();
+        }
       }
       this.currentImage++;
     }, 75);
@@ -105,7 +111,7 @@ class Blob extends MovableObject {
   }
 
   move(speed) {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (!this.isDead) {
         const characterX = this.getCharacterX();
         const newDirection = characterX > this.x ? 1 : -1;

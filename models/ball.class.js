@@ -16,7 +16,7 @@ class Ball extends MovableObject {
   }
 
   followTarget() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.target) {
         const dx = this.target.x + this.target.width / 2 - this.x;
         const dy = this.target.y + this.target.height / 2 - this.y;

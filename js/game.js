@@ -11,7 +11,6 @@ function init() {
   canvas.width = 320;
   canvas.height = 180;
 
-  // Show start screen first
   startScreen = new StartScreen(canvas);
 }
 
@@ -19,6 +18,7 @@ function initializeGame() {
   if (!gameStarted) {
     gameStarted = true;
     world = new World(canvas, keyboard);
+    // world.blobmaster = [];
   }
 }
 

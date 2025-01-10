@@ -1,5 +1,9 @@
+:root {
+  --canvasSizeMult: 3;
+}
 * {
-  --canvasSizeMult: 4;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -9,17 +13,56 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: rgba(217, 217, 217, 1);
 }
 
 canvas {
   background-color: rgb(40, 40, 40);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  width: calc(320px * var(--canvasSizeMult));
-  height: calc(180px * var(--canvasSizeMult));
+  width: 100%;
+  height: 100%;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.39) inset;
+  /* filter: blur(10px); */
 }
 
 @font-face {
   font-family: "Tiny5";
   src: url("./fonts/Tiny5.ttf") format("truetype");
+}
+
+.case {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(180px * var(--canvasSizeMult));
+  width: calc(320px * var(--canvasSizeMult));
+  padding: 20px;
+  background: linear-gradient(0deg, #dcd8d2 0%, #dcd8d2 100%), linear-gradient(118.82deg, rgba(0, 0, 0, 0) 0.53%, rgba(0, 0, 0, 0.07) 100%);
+  background-blend-mode: normal, overlay;
+  box-shadow: 2px 2px 2px 0px rgba(255, 255, 255, 0.62) inset, 0.5px 0.5px 1px 0px rgba(255, 255, 255, 1) inset, -2px -2px 3px 0px rgba(0, 0, 0, 0.09) inset, -0.5px -0.5px 1.4px 0px rgba(0, 0, 0, 0.33) inset, 16px 25px 38.2px 0px rgba(0, 0, 0, 0.25), 5px 4px 21.9px 0px rgba(0, 0, 0, 0.25), 1px 1px 8px 0px rgba(0, 0, 0, 0.19), 2px 2px 4px 0px rgba(0, 0, 0, 0.39) inset;
+  border-radius: 10px;
+}
+
+.frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  background: rgba(46, 47, 50, 1);
+  box-shadow: 1px 1px 1.6px 0px rgba(0, 0, 0, 1) inset, -1px -1px 2px 0px rgba(0, 0, 0, 0.3), -0.5px -0.5px 0.6px 0px rgba(0, 0, 0, 0.38), 3px 4px 3.3px 0px rgba(255, 255, 255, 0.48), 0.5px 0.5px 0.8px 0px rgba(255, 255, 255, 1), -0.5px -0.5px 2.1px 0px rgba(255, 254, 246, 0.22) inset;
+}
+
+.screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0.035) 16.86%, rgba(0, 0, 0, 0) 16.86%), linear-gradient(113.77deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 100.63%), linear-gradient(0deg, #a9a9a9 0%, #a9a9a9 100%);
+  background-blend-mode: normal, overlay, overlay;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.39) inset;
 }

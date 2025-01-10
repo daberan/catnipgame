@@ -8,12 +8,14 @@ class World {
   isCollisionEnabled = true;
   blobmaster = null;
   hud = new Hud();
+  soundControl = null;
   shitCounter = new ShitCounter();
   shit = [];
   ball = [];
   collectibleShit = [];
   theme;
   bossTheme;
+  gameOver = null;
   muted = false;
   hasPlayedBossMusic = false;
   backgrounds = BACKGROUNDS;
@@ -22,6 +24,8 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.soundControl = new Soundcontrol(this.canvas, this);
+    this.gameOver = new GameOver(canvas, this);
 
     this.spawnCollectibleShit();
     this.draw();
@@ -29,9 +33,11 @@ class World {
     this.checkCollisions();
     this.checkBallThrow();
     this.checkForBossSpawn();
+    this.checkIfGameOver();
 
     this.theme = new Audio("./audio/Thunderbirds.wav");
     this.bossTheme = new Audio("./audio/TheBloop.wav");
+    this.gameOverSound = new Audio("./audio/gameover.mp3");
     this.theme.loop = true;
     this.bossTheme.loop = true;
 
@@ -77,7 +83,11 @@ class World {
     this.addObjectsToMap(this.ball);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.hud);
+    this.addToMap(this.soundControl);
     this.addToMap(this.shitCounter);
+    if (this.character.isDead) {
+      this.addToMap(this.gameOver);
+    }
 
     requestAnimationFrame(() => {
       this.draw();
@@ -138,21 +148,32 @@ class World {
   }
 
   checkForBossSpawn() {
-    setInterval(() => {
-      if (!this.blobmaster && this.level.enemies.every((enemy) => enemy instanceof Blob === false)) {
+    setStoppableInterval(() => {
+      if (!this.blobmaster && this.level.enemies.every((enemy) => enemy instanceof Blob === false) && this.level.enemies.every((enemy) => !(enemy instanceof Blobmaster))) {
         if (!this.hasPlayedBossMusic) {
           this.theme.pause();
           this.theme.currentTime = 0;
-
           this.bossTheme.play();
-
           this.hasPlayedBossMusic = true;
         }
+
         this.blobmaster = new Blobmaster();
         this.blobmaster.world = this;
         this.level.enemies.push(this.blobmaster);
       }
     }, 1000);
+  }
+
+  clearEnemies() {
+    if (this.level && this.level.enemies) {
+      this.level.enemies.forEach((enemy) => {
+        if (enemy.audioContext) {
+          enemy.audioContext.close();
+        }
+      });
+
+      this.level.enemies.splice(0, this.level.enemies.length);
+    }
   }
 
   drawCollisionBox(obj) {
@@ -175,7 +196,6 @@ class World {
   isColliding(obj1, obj2) {
     let obj2Height = obj2.height;
     let obj2Y = obj2.y;
-
     if (obj2 instanceof Blob || obj2 instanceof Blobmaster || obj2 instanceof Ball) {
       obj2Height = obj2.height * 0.7;
       obj2Y = obj2.y + (obj2.height - obj2Height);
@@ -184,7 +204,7 @@ class World {
   }
 
   checkCollisions() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (!this.isCollisionEnabled || this.character.isDead) return;
       this.level.enemies.forEach((enemy) => {
         if (this.isColliding(this.character, enemy)) {
@@ -242,6 +262,17 @@ class World {
     }
   }
 
+  checkIfGameOver() {
+    setInterval(() => {
+      if (this.character.isDead && !this.hasPlayedGameOverSound) {
+        this.theme.pause();
+        this.bossTheme.pause();
+        this.gameOverSound.play();
+        this.hasPlayedGameOverSound = true;
+      }
+    }, 100);
+  }
+
   checkShitCollisions() {
     this.level.enemies.forEach((enemy) => {
       this.shit.forEach((poop, index) => {
@@ -283,7 +314,7 @@ class World {
 
   checkBallThrow() {
     let ballCooldown = false;
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.blobmaster && !ballCooldown && !this.blobmaster.isDead) {
         let flyBall = new Ball(this.blobmaster.x, this.blobmaster.y + this.blobmaster.height / 2, this.character);
         this.ball.push(flyBall);

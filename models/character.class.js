@@ -14,6 +14,7 @@ class Character extends MovableObject {
   character_jump_sound = new Audio("./audio/character_jump.mp3");
   character_hurt_sound = new Audio("./audio/hurt.wav");
   character_enemyJump_sound = new Audio("./audio/enemyJump3.wav");
+
   characterEnergy = 100;
   characterGroundX = 102;
   shitAmmo = 3;
@@ -47,15 +48,15 @@ class Character extends MovableObject {
   }
 
   handleJumpAnimation() {
-    setInterval(() => {
-      if (this.world.keyboard.UP && !this.isAboveGround()) {
+    setStoppableInterval(() => {
+      if (this.world.keyboard.UP && !this.isAboveGround() && !this.world.character.isDead) {
         this.jump(this.character_jump_sound);
       }
     }, 10);
   }
 
   handleIdleAnimation() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_idle) {
         let i = this.currentImage % this.sequence_idle.length;
         let path = this.sequence_idle[i];
@@ -66,7 +67,7 @@ class Character extends MovableObject {
   }
 
   handleRollingAnimation() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_rolling_left || this.currentSequence === this.sequence_rolling_right) {
         let i = this.currentImage % this.currentSequence.length;
         let path = this.currentSequence[i];
@@ -77,7 +78,7 @@ class Character extends MovableObject {
   }
 
   handleHurtAnimation() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_hurt) {
         let i = this.currentImage % this.sequence_hurt.length;
         let path = this.sequence_hurt[i];
@@ -88,7 +89,7 @@ class Character extends MovableObject {
   }
 
   handleDyingAnimation() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_dead) {
         let i = this.currentImage % this.sequence_dead.length;
         let path = this.sequence_dead[i];
@@ -99,8 +100,8 @@ class Character extends MovableObject {
   }
 
   walkRight() {
-    setInterval(() => {
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+    setStoppableInterval(() => {
+      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.character.isDead) {
         this.x += 1;
       }
       this.world.camera_x = -this.x + 100;
@@ -108,8 +109,8 @@ class Character extends MovableObject {
   }
 
   walkLeft() {
-    setInterval(() => {
-      if (this.world.keyboard.LEFT && this.x > 0) {
+    setStoppableInterval(() => {
+      if (this.world.keyboard.LEFT && this.x > 0 && !this.world.character.isDead) {
         this.x -= 1;
       }
       this.world.camera_x = -this.x + 100;
@@ -117,7 +118,7 @@ class Character extends MovableObject {
   }
 
   animationSequencePicker() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.world.keyboard.LEFT && !this.isHurt && !this.isDead) {
         this.currentSequence = this.sequence_rolling_left;
       } else if (this.world.keyboard.RIGHT && !this.isHurt && !this.isDead) {
@@ -134,7 +135,7 @@ class Character extends MovableObject {
 
   checkShitThrow() {
     let shitCooldown = false;
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.world.keyboard.P && !shitCooldown && this.shitAmmo > 0) {
         let poop = new Shit(this.x, this.y, this.checkCharacterDirection());
         this.world.shit.push(poop);
@@ -201,5 +202,6 @@ class Character extends MovableObject {
   die() {
     console.log("Character died"); // Debug log
     this.isDead = true;
+    // restartGame();
   }
 }

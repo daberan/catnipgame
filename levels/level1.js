@@ -1,5 +1,9 @@
+function getNewEnemies() {
+  return [new Blob(), new Blob(), new Blob()];
+}
+
 const level1 = new Level(
-  [new Blob(), new Blob(), new Blob(), new Blob()],
+  getNewEnemies(),
   [new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud()],
   [
     new BackgroundObject("./img/environment/background/sky.png", -320, 0),
