@@ -92,7 +92,7 @@ class Blob extends MovableObject {
           this.audioContext.resume();
         }
         this.updateAudio();
-        if (!this.world.muted) {
+        if (!this.world.soundControl.isMuted) {
           this.blob_bounce_sound.play();
         }
       }

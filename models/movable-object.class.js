@@ -76,7 +76,7 @@ class MovableObject {
     if (!sound) {
       return;
     }
-    if (!this.world.muted) {
+    if (!this.world.soundControl.isMuted) {
       sound.play();
     }
   }

@@ -16,7 +16,7 @@ class World {
   theme;
   bossTheme;
   gameOver = null;
-  muted = false;
+  winscreen = null;
   hasPlayedBossMusic = false;
   backgrounds = BACKGROUNDS;
 
@@ -26,49 +26,34 @@ class World {
     this.keyboard = keyboard;
     this.soundControl = new Soundcontrol(this.canvas, this);
     this.gameOver = new GameOver(canvas, this);
+    this.winscreen = new Winscreen(canvas, this);
 
     this.spawnCollectibleShit();
     this.draw();
     this.setWorld();
     this.checkCollisions();
-    this.checkBallThrow();
     this.checkForBossSpawn();
     this.checkIfGameOver();
+    this.checkIfGameWin();
 
     this.theme = new Audio("./audio/Thunderbirds.wav");
     this.bossTheme = new Audio("./audio/TheBloop.wav");
     this.gameOverSound = new Audio("./audio/gameover.mp3");
+    this.gameWinSound = new Audio("./audio/win.mp3");
     this.theme.loop = true;
     this.bossTheme.loop = true;
 
-    document.addEventListener(
-      "keydown",
-      () => {
-        if (!this.muted) {
-          this.theme.play();
-        }
-      },
-      { once: true }
-    );
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "m" || e.key === "M") {
-        this.toggleMusic();
-      }
-    });
+    if (!this.soundControl.isMuted) {
+      this.theme.play();
+    }
   }
+
   setWorld() {
     this.character.world = this;
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
     });
     this.character.initializeCharacter();
-  }
-
-  toggleMusic() {
-    this.muted = !this.muted;
-    this.theme.volume = this.muted ? 0 : 1;
-    this.bossTheme.volume = this.muted ? 0 : 1;
   }
 
   draw() {
@@ -87,6 +72,10 @@ class World {
     this.addToMap(this.shitCounter);
     if (this.character.isDead) {
       this.addToMap(this.gameOver);
+    }
+
+    if (this.blobmaster && this.blobmaster.isDead) {
+      this.addToMap(this.winscreen);
     }
 
     requestAnimationFrame(() => {
@@ -273,6 +262,17 @@ class World {
     }, 100);
   }
 
+  checkIfGameWin() {
+    setInterval(() => {
+      if (this.blobmaster && this.blobmaster.isDead && !this.hasPlayedGameWinSound && !this.soundControl.isMuted) {
+        this.theme.pause();
+        this.bossTheme.pause();
+        this.gameWinSound.play();
+        this.hasPlayedGameWinSound = true;
+      }
+    }, 100);
+  }
+
   checkShitCollisions() {
     this.level.enemies.forEach((enemy) => {
       this.shit.forEach((poop, index) => {
@@ -280,7 +280,7 @@ class World {
           this.isCollisionEnabled = false;
           enemy.health -= 10;
           enemy.isHurt = true;
-          if (!this.muted) {
+          if (!this.soundControl.isMuted) {
             new Audio("./audio/coin.wav").play();
           }
 
@@ -310,27 +310,6 @@ class World {
     setTimeout(() => {
       this.isCollisionEnabled = true;
     }, 250);
-  }
-
-  checkBallThrow() {
-    let ballCooldown = false;
-    setStoppableInterval(() => {
-      if (this.blobmaster && !ballCooldown && !this.blobmaster.isDead) {
-        let flyBall = new Ball(this.blobmaster.x, this.blobmaster.y + this.blobmaster.height / 2, this.character);
-        this.ball.push(flyBall);
-        this.killBall();
-        ballCooldown = true;
-        setTimeout(() => {
-          ballCooldown = false;
-        }, 4000);
-      }
-    }, 10);
-  }
-
-  killBall() {
-    setTimeout(() => {
-      this.ball = [];
-    }, 4000);
   }
 
   checkCollisionSide(enemy, obj1) {

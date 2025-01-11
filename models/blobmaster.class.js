@@ -7,7 +7,7 @@ class Blobmaster extends MovableObject {
   height = 64;
   width = 64;
   y = 67;
-  health = 160;
+  health = 10;
   isHurt = false;
   isDead = false;
   currentSequence = this.sequence_idle;
@@ -34,6 +34,28 @@ class Blobmaster extends MovableObject {
     this.gainNode.connect(this.audioContext.destination);
 
     this.animate();
+    this.checkBallThrow(); // Add this
+  }
+
+  checkBallThrow() {
+    let ballCooldown = false;
+    setStoppableInterval(() => {
+      if (!ballCooldown && !this.isDead) {
+        let flyBall = new Ball(this.x, this.y + this.height / 2, this.world.character);
+        this.world.ball.push(flyBall);
+        this.killBall();
+        ballCooldown = true;
+        setTimeout(() => {
+          ballCooldown = false;
+        }, 4000);
+      }
+    }, 10);
+  }
+
+  killBall() {
+    setTimeout(() => {
+      this.world.ball = [];
+    }, 4000);
   }
 
   getCharacterX() {
@@ -79,7 +101,7 @@ class Blobmaster extends MovableObject {
           this.audioContext.resume();
         }
         this.updateAudio();
-        if (!this.world.muted) {
+        if (!this.world.soundControl.isMuted) {
           this.blob_bounce_sound.play();
         }
       }

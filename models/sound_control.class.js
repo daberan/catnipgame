@@ -64,9 +64,11 @@ class Soundcontrol {
     const imagePath = this.isMuted ? "./img/soundcontrol/muted.png" : "./img/soundcontrol/unmuted.png";
     this.img = this.imageCache[imagePath];
 
-    // Toggle world's audio state
+    // Update all audio volumes directly
     if (this.world) {
-      this.world.toggleMusic();
+      this.world.theme.volume = this.isMuted ? 0 : 1;
+      this.world.bossTheme.volume = this.isMuted ? 0 : 1;
+      this.world.gameOverSound.volume = this.isMuted ? 0 : 1;
     }
   }
 }

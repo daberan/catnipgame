@@ -140,7 +140,7 @@ class Character extends MovableObject {
         let poop = new Shit(this.x, this.y, this.checkCharacterDirection());
         this.world.shit.push(poop);
         this.shitAmmo--;
-        if (!this.world.muted) {
+        if (!this.world.soundControl.isMuted) {
           new Audio("./audio/throw.wav").play();
         }
 
@@ -165,7 +165,7 @@ class Character extends MovableObject {
 
   collectShit() {
     this.shitAmmo++;
-    if (!this.world.muted) {
+    if (!this.world.soundControl.isMuted) {
       new Audio("./audio/coin.wav").play();
     }
 
@@ -176,7 +176,7 @@ class Character extends MovableObject {
     this.jump();
     this.reduceEnergy();
     this.world.hud.setHealthBarImage(this.characterEnergy);
-    if (!this.world.muted) {
+    if (!this.world.soundControl.isMuted) {
       this.character_hurt_sound.play();
     }
 
