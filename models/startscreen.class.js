@@ -12,15 +12,14 @@ class StartScreen {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
 
-    this.backgroundImg.src = "./img/startscreen/World.png";
-    this.startButtonImg.src = "./img/startscreen/button.png";
+    this.backgroundImg.src = "./img/startscreen/Startscreen.png";
 
     this.buttonWidth = 58;
     this.buttonHeight = 21;
     this.buttonX = canvas.width / 2 - this.buttonWidth / 2;
     this.buttonY = canvas.height / 2 - 12;
 
-    Promise.all([this.loadImage(this.backgroundImg), this.loadImage(this.startButtonImg)]).then(() => {
+    Promise.all([this.loadImage(this.backgroundImg)]).then(() => {
       this.draw();
       this.addClickListener();
     });
@@ -34,12 +33,13 @@ class StartScreen {
 
   draw() {
     this.ctx.drawImage(this.backgroundImg, 0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.drawImage(this.startButtonImg, this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight);
   }
 
   addClickListener() {
     this.canvas.addEventListener("click", (event) => {
       const rect = this.canvas.getBoundingClientRect();
+      console.log(rect);
+
       const scaleX = this.canvas.width / rect.width;
       const scaleY = this.canvas.height / rect.height;
 

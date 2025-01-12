@@ -57,6 +57,7 @@ function openMouth() {
   document.querySelector(".button").classList.add("shrinkButton");
   document.querySelector("nav").classList.add("moveUp");
   document.querySelector(".textWrapper").classList.add("textWrapperSlideUpMore");
+  document.querySelector(".mainWrapper").classList.add("moved");
   document.querySelector(".tongue").classList.add("lick");
 
   setTimeout(() => {
@@ -69,7 +70,7 @@ function openMouth() {
     document.querySelector(".blackScreen").classList.add("blackScreen-initial");
     document.querySelector("body").classList.add("backgroundWhite");
     init();
-    document.querySelector(".canvasGame").classList.add("show");
+    document.querySelector(".gameWrapper").classList.add("show");
   }, 1000);
   setTimeout(() => {
     document.querySelector(".blackScreen").remove();

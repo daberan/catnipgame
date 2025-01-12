@@ -7,7 +7,7 @@ class Blobmaster extends MovableObject {
   height = 64;
   width = 64;
   y = 67;
-  health = 10;
+  health = 160;
   isHurt = false;
   isDead = false;
   currentSequence = this.sequence_idle;
@@ -34,7 +34,7 @@ class Blobmaster extends MovableObject {
     this.gainNode.connect(this.audioContext.destination);
 
     this.animate();
-    this.checkBallThrow(); // Add this
+    this.checkBallThrow();
   }
 
   checkBallThrow() {
@@ -42,6 +42,7 @@ class Blobmaster extends MovableObject {
     setStoppableInterval(() => {
       if (!ballCooldown && !this.isDead) {
         let flyBall = new Ball(this.x, this.y + this.height / 2, this.world.character);
+        flyBall.world = this.world;
         this.world.ball.push(flyBall);
         this.killBall();
         ballCooldown = true;

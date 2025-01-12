@@ -1,0 +1,231 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: Inter;
+  src: url("./fonts/Inter.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Caveat;
+  src: url("./fonts/Caveat.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.mainWrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  height: 100dvh;
+  width: 100%;
+  background: linear-gradient(180deg, #ae9bff 43.14%, #7bc4cf 100%);
+  overflow: hidden;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  max-width: 1440px;
+
+  /* background-color: aliceblue; */
+}
+
+nav {
+  display: flex;
+  height: 64px;
+  width: calc(100% - 64px);
+  max-width: 860px;
+  margin-top: 24px;
+  background: rgba(217, 217, 217, 0.1);
+  border-radius: 23px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(4px);
+  box-shadow: 0px 0px 2.3px 0px rgba(0, 0, 0, 0.1), 0px 0px 7.6px 0px rgba(0, 0, 0, 0.1);
+}
+
+.navLogoWrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.navLogo {
+  height: 100%;
+}
+
+.navTitle {
+  font-family: Caveat;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40.32px;
+  letter-spacing: -0.05em;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 64px;
+  animation: slideUp 0.75s ease-out forwards;
+  text-align: center;
+  gap: unset;
+}
+
+.title1 {
+  font-family: "Inter";
+  font-size: 112px;
+  font-weight: 500;
+  line-height: unset;
+  letter-spacing: -0.05em;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+.title2 {
+  font-family: "Caveat";
+  font-size: 153px;
+  font-weight: bold;
+  line-height: unset;
+}
+
+.paragraph {
+  font-family: "Inter";
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 31.47px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  margin: 0;
+}
+
+.button {
+  display: flex;
+  padding: 12px 28px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 39px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: linear-gradient(61deg, #000 20%, #484848 120%);
+  background-position: 0 0;
+  box-shadow: -4px 4px 9.2px 0px rgba(0, 0, 0, 0.2), -0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.35);
+  width: 240px;
+  max-height: 60px;
+  cursor: pointer;
+}
+
+.buttonText {
+  color: white;
+  font-family: "Inter";
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 33.89px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  cursor: pointer;
+}
+
+/* Small devices (phones) */
+@media (max-width: 576px) {
+  .textWrapper {
+    padding: 40px 64px;
+    gap: 40px;
+  }
+  .title1 {
+    font-size: 60px;
+    font-weight: 500;
+    line-height: 40px;
+  }
+
+  .title2 {
+    font-size: 80px;
+    line-height: 60px;
+  }
+
+  .paragraph {
+    font-size: 22px;
+    line-height: 24px;
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 577px) and (max-width: 768px) {
+  .textWrapper {
+    padding: 40px 64px;
+    gap: 20px;
+  }
+  .title1 {
+    font-size: 55px;
+    font-weight: 500;
+  }
+
+  .title2 {
+    font-size: 70px;
+  }
+
+  .paragraph {
+    font-size: 20px;
+  }
+}
+
+/* Large devices (laptops/desktops) */
+@media (min-width: 769px) and (max-width: 992px) {
+  .textWrapper {
+    padding: 24px 64px;
+  }
+
+  .title1 {
+    font-size: 70px;
+    font-weight: 500;
+  }
+
+  .title2 {
+    font-size: 100px;
+  }
+
+  .paragraph {
+    font-size: 24px;
+  }
+}
+
+/* Extra large devices (large desktops) */
+@media (min-width: 993px) and (max-width: 1200px) {
+  .textWrapper {
+    padding: 24px 64px;
+  }
+
+  .title1 {
+    font-size: 110px;
+    font-weight: 500;
+  }
+
+  .title2 {
+    font-size: 128px;
+  }
+}
+
+/* XXL devices (larger desktops) */
+@media (min-width: 1201px) {
+  /* styles */
+}

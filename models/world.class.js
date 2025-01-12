@@ -31,6 +31,7 @@ class World {
     this.spawnCollectibleShit();
     this.draw();
     this.setWorld();
+    this.spawnBlobs();
     this.checkCollisions();
     this.checkForBossSpawn();
     this.checkIfGameOver();
@@ -134,6 +135,20 @@ class World {
         }
       }
     }, 500);
+  }
+
+  spawnBlobs() {
+    const totalBlobs = 5;
+    let blobsSpawned = 0;
+
+    let spawnInterval = setStoppableInterval(() => {
+      if (blobsSpawned < totalBlobs) {
+        let newBlob = new Blob();
+        newBlob.world = this;
+        this.level.enemies.push(newBlob);
+        blobsSpawned++;
+      }
+    }, 4000);
   }
 
   checkForBossSpawn() {

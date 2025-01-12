@@ -8,8 +8,7 @@ class Blob extends MovableObject {
   health = 40;
   currentSequence = this.sequence_idle;
   canTurn = true;
-  currentDirection = 1; // Track current direction
-
+  currentDirection = 1;
   audioContext = new AudioContext();
   gainNode = this.audioContext.createGain();
   pannerNode = this.audioContext.createStereoPanner();
@@ -19,7 +18,7 @@ class Blob extends MovableObject {
     this.loadImages(this.sequence_idle);
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dying);
-    this.speed = Math.floor(Math.random() * 20) + 6;
+    this.speed = Math.floor(Math.random() * 10) + 1;
     this.x = Math.round(500 + Math.random() * 500);
 
     this.blob_bounce_sound = new Audio("./audio/blob_bounce1.wav");
@@ -28,6 +27,7 @@ class Blob extends MovableObject {
     this.pannerNode.connect(this.gainNode);
     this.gainNode.connect(this.audioContext.destination);
     this.applyGravity();
+    this.updateAudio();
 
     this.initializeMovement();
   }
@@ -43,15 +43,16 @@ class Blob extends MovableObject {
         // Random chance to jump (about 20% chance every check)
         if (Math.random() < 0.2) {
           const direction = this.getCharacterX() > this.x ? 1 : -1;
+
           this.jumpForward(direction);
         }
       }
-    }, 500); // Check every 1.5 seconds
+    }, 500);
   }
 
   jumpForward(direction) {
     this.speedY = Math.floor(Math.random() * (20 - 5 + 1)) + 5;
-    this.accelerateOnX(5 * direction, 200); // Jump forward in current direction
+    this.accelerateOnX(5 * direction, 200, "blob");
   }
 
   getCharacterX() {
@@ -62,24 +63,27 @@ class Blob extends MovableObject {
   }
 
   updateAudio() {
-    const characterX = this.getCharacterX();
-    const distance = Math.abs(this.x - characterX);
-    const maxDistance = 300;
+    setInterval(() => {
+      const characterX = this.getCharacterX();
+      const distance = Math.abs(this.x - characterX);
+      const maxDistance = 300;
 
-    let volume = (1 - distance / maxDistance) * 0.3;
-    volume = Math.max(0, Math.min(1, volume));
-    this.gainNode.gain.value = volume;
+      let volume = (1 - distance / maxDistance) * 2;
+      volume = Math.max(0, Math.min(1, volume));
+      this.gainNode.gain.value = volume;
 
-    const panMaxDistance = 200;
-    const relativeX = this.x - characterX;
-    let panValue = relativeX / panMaxDistance;
-    panValue = Math.max(-1, Math.min(1, panValue)) * 0.7;
-    this.pannerNode.pan.value = panValue;
+      const panMaxDistance = 200;
+      const relativeX = this.x - characterX;
+      let panValue = relativeX / panMaxDistance;
+      panValue = Math.max(-1, Math.min(1, panValue)) * 0.3;
+      this.pannerNode.pan.value = panValue;
+    }, 25);
   }
 
   animate() {
-    this.move(7);
+    this.move(this.speed);
 
+    const isMobileWidth = window.innerWidth <= 768;
     setStoppableInterval(() => {
       this.checkIfDead();
       this.updateCurrentAnimationSequence();
@@ -87,17 +91,16 @@ class Blob extends MovableObject {
       let path = this.currentSequence[i];
       this.img = this.imageCache[path];
 
-      if (i === 3) {
+      if (i === 3 && !isMobileWidth) {
         if (this.audioContext.state === "suspended") {
           this.audioContext.resume();
         }
-        this.updateAudio();
-        if (!this.world.soundControl.isMuted) {
+        if (this.world && !this.world.soundControl.isMuted) {
           this.blob_bounce_sound.play();
         }
       }
       this.currentImage++;
-    }, 75);
+    }, 100);
   }
 
   updateCurrentAnimationSequence() {

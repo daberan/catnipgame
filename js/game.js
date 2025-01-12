@@ -11,14 +11,28 @@ function init() {
   canvas.width = 320;
   canvas.height = 180;
 
-  startScreen = new StartScreen(canvas);
+  setTimeout(() => {
+    startScreen = new StartScreen(canvas);
+  }, 100);
+
+  // Add touch event listeners for mobile
+  canvas.addEventListener("touchstart", (event) => {
+    if (!gameStarted) return;
+    event.preventDefault(); // Prevent default touch behavior
+    keyboard.UP = true;
+  });
+
+  canvas.addEventListener("touchend", (event) => {
+    if (!gameStarted) return;
+    event.preventDefault(); // Prevent default touch behavior
+    keyboard.UP = false;
+  });
 }
 
 function initializeGame() {
   if (!gameStarted) {
     gameStarted = true;
     world = new World(canvas, keyboard);
-    // world.blobmaster = [];
   }
 }
 
@@ -67,3 +81,6 @@ document.addEventListener("keyup", (event) => {
     keyboard.P = false;
   }
 });
+
+window.initializeGame = initializeGame;
+window.init = init;

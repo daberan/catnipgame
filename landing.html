@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="landing.css" />
+    <script src="./js/utility.js"></script>
     <script src="./js/backgrounds.js"></script>
     <script src="./models/movable-object.class.js"></script>
     <script src="./models/character.class.js"></script>
@@ -22,11 +23,24 @@
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
     <script src="./models/startscreen.class.js"></script>
+    <script src="./models/sound_control.class.js"></script>
+    <script src="./models/gameover.class.js"></script>
+    <script src="./models/winscreen.class.js"></script>
+
     <script src="./js/game.js"></script>
     <script src="https://unpkg.com/@rive-app/canvas"></script>
   </head>
   <body>
-    <canvas class="canvasGame" id="canvasGame" width="720" height="480"> </canvas>
+    <div class="gameWrapper">
+      <div class="case">
+        <div class="frame">
+          <div class="screen">
+            <canvas class="canvasGame" id="canvasGame"> </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="tongue">
       <img src="./img/landing/tongue.svg" alt="" />
     </div>

@@ -3,6 +3,7 @@ class Ball extends MovableObject {
   height = 16;
   speedX = 0;
   homingSpeed = 2;
+  world;
 
   constructor(x, y, target) {
     super().loadImage("./img/enemies/ball/ball1.png");
@@ -17,7 +18,7 @@ class Ball extends MovableObject {
 
   followTarget() {
     setStoppableInterval(() => {
-      if (this.target) {
+      if (this.target && !this.world?.blobmaster?.isDead) {
         const dx = this.target.x + this.target.width / 2 - this.x;
         const dy = this.target.y + this.target.height / 2 - this.y;
 

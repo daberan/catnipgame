@@ -1,5 +1,5 @@
 function getNewEnemies() {
-  return [new Blob(), new Blob(), new Blob()];
+  return [new Blob()];
 }
 
 const level1 = new Level(
