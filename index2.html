@@ -4,28 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style2.css" />
+    <script src="https://unpkg.com/@rive-app/canvas"></script>
     <title>Document</title>
   </head>
-  <body>
+  <body onload="onLoadAnimations()">
     <div class="mainWrapper">
-      <button class="button">
-        <span class="buttonText">Enter Game</span>
-      </button>
       <div class="contentWrapper">
         <nav>
           <div class="navLogoWrapper">
             <img class="navLogo" src="./img/landing/logo.png" alt="" />
             <span class="navTitle">Catnip!</span>
           </div>
+          <button class="buttonTop" onclick="openMouth()">
+            <span class="buttonTextTop">Enter Game</span>
+          </button>
         </nav>
         <div class="textWrapper">
           <div class="titleWrapper">
             <span class="title1">It's all about </span>
             <span class="title2">Catnip!</span>
           </div>
-          <p class="paragraph">Enjoy playing the most boring game <br />in the history of gaming.</p>
+          <p class="paragraph">Enjoy playing the most boring game in the history of gaming.</p>
         </div>
+        <button class="button" onclick="openMouth()">
+          <span class="buttonText">Enter Game</span>
+        </button>
       </div>
+      <canvas class="canvasCat" id="canvasCat"></canvas>
     </div>
+
+    <script src="./pageAnimations.js"></script>
+    <script src="./rive2.js"></script>
   </body>
 </html>

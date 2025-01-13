@@ -53,26 +53,4 @@ const r = new rive.Rive({
 
 function openMouth() {
   mouth.fire();
-  document.querySelector(".catWrapper").classList.add("slide-up-more");
-  document.querySelector(".button").classList.add("shrinkButton");
-  document.querySelector("nav").classList.add("moveUp");
-  document.querySelector(".textWrapper").classList.add("textWrapperSlideUpMore");
-  document.querySelector(".mainWrapper").classList.add("moved");
-  document.querySelector(".tongue").classList.add("lick");
-
-  setTimeout(() => {
-    document.querySelector(".blackScreen").classList.add("maskShow");
-  }, 900);
-
-  setTimeout(() => {
-    document.querySelector(".catWrapper").classList.add("displayNone");
-    document.querySelector(".blackScreen").classList.add("maskGrow");
-    document.querySelector(".blackScreen").classList.add("blackScreen-initial");
-    document.querySelector("body").classList.add("backgroundWhite");
-    init();
-    document.querySelector(".gameWrapper").classList.add("show");
-  }, 1000);
-  setTimeout(() => {
-    document.querySelector(".blackScreen").remove();
-  }, 2500);
 }
