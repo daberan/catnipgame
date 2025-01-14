@@ -14,4 +14,9 @@ function openMouthMove() {
   document.querySelector(".canvasCat").classList.add("openMouthMove");
   document.querySelector("nav").classList.add("moveUp");
   document.querySelector(".tongue").classList.add("moveUpAndDown");
+  document.querySelector(".button").classList.remove("onLoadMove");
+  document.querySelector(".button").classList.add("hide");
+  setTimeout(() => {
+    document.querySelector(".gameWrapper").classList.add("show");
+  }, 1000);
 }

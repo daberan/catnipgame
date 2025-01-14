@@ -1,26 +1,23 @@
 <svg width="1800" height="1024" viewBox="0 0 1800 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Define mask for cutting out the hole -->
-    <defs>
-        <mask id="cutoutMask">
-            <!-- Everything starts as visible (white) -->
-            <rect width="1800" height="1024" fill="white"/>
-            <!-- The shape becomes a hole (black) -->
-            <path d="M762.225 525.5C759.247 462.973 785.725 390 846.725 390C873.725 390 882.225 404 883.225 424C884.225 444 870.225 452.5 870.225 471.5C870.225 490.5 889.725 502 904.225 502.5C918.725 503 936.725 495 936.725 471.5C936.725 448 922.225 438.5 921.725 424C921.225 409.5 940.725 390 971.225 390C1001.73 390 1043.22 411.5 1037.72 517C1034.1 586.5 979.225 633.5 897.725 633.5C828.196 633.5 764.725 578 762.225 525.5Z" fill="black"/>
-        </mask>
-    </defs>
+    <!-- The black background and glowing shape -->
+    <rect width="1800" height="1024" fill="black"/>
+    
+    <!-- The cutout mask that will hide part of the glow -->
+    <mask id="cutoutMask">
+        <!-- Everything starts as visible -->
+        <rect width="1800" height="1024" fill="white"/>
+        <!-- This path creates the hole - note it's black to create transparency -->
+        <path d="M762.225 525.5C759.247 462.973 785.725 390 846.725 390C873.725 390 882.225 404 883.225 424C884.225 444 870.225 452.5 870.225 471.5C870.225 490.5 889.725 502 904.225 502.5C918.725 503 936.725 495 936.725 471.5C936.725 448 922.225 438.5 921.725 424C921.225 409.5 940.725 390 971.225 390C1001.73 390 1043.22 411.5 1037.72 517C1034.1 586.5 979.225 633.5 897.725 633.5C828.196 633.5 764.725 578 762.225 525.5Z" fill="black"/>
+    </mask>
 
-    <!-- Apply mask to the entire original SVG -->
+    <!-- The glowing element with mask applied -->
     <g mask="url(#cutoutMask)">
-        <!-- Original black background -->
-        <rect width="1800" height="1024" fill="black"/>
-        
-        <!-- Original glowing shape with filter -->
         <g filter="url(#filter0_dddd_1292_46)">
             <path d="M762.225 525.5C759.247 462.973 785.725 390 846.725 390C873.725 390 882.225 404 883.225 424C884.225 444 870.225 452.5 870.225 471.5C870.225 490.5 889.725 502 904.225 502.5C918.725 503 936.725 495 936.725 471.5C936.725 448 922.225 438.5 921.725 424C921.225 409.5 940.725 390 971.225 390C1001.73 390 1043.22 411.5 1037.72 517C1034.1 586.5 979.225 633.5 897.725 633.5C828.196 633.5 764.725 578 762.225 525.5Z" fill="white"/>
         </g>
+        <rect width="1800" height="1024" fill="black"/>
     </g>
 
-    <!-- Keep the original filter definitions -->
     <defs>
         <filter id="filter0_dddd_1292_46" x="512" y="140" width="776.22" height="743.5" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix"/>
