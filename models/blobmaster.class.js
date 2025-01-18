@@ -1,32 +1,62 @@
+/**
+ * Represents the boss enemy that can throw homing balls and perform rush attacks.
+ * Features spatial audio effects and multiple animation states.
+ * @extends MovableObject
+ */
 class Blobmaster extends MovableObject {
+  /** @type {string[]} - Array of image paths for idle animation sequence */
   sequence_idle = ["./img/enemies/blobmaster/blobmaster1.png", "./img/enemies/blobmaster/blobmaster2.png", "./img/enemies/blobmaster/blobmaster3.png", "./img/enemies/blobmaster/blobmaster4.png", "./img/enemies/blobmaster/blobmaster5.png", "./img/enemies/blobmaster/blobmaster6.png"];
+
+  /** @type {string[]} - Array of image paths for hurt animation sequence */
   sequence_hurt = ["./img/enemies/blobmaster/Blobmaster_hurtnew1.png", "./img/enemies/blobmaster/Blobmaster_hurtnew2.png"];
+
+  /** @type {string[]} - Array of image paths for death animation sequence */
   sequence_dying = ["./img/enemies/blobmaster/Blobmaster_dying1.png", "./img/enemies/blobmaster/Blobmaster_dying2.png"];
+
+  /** @type {number} - Current frame index for animation, randomized start */
   currentImage = Math.floor(Math.random() * 6);
+  /** @type {World} - Reference to the game world instance */
   world;
+  /** @type {number} - Height of the blobmaster sprite in pixels */
   height = 64;
+  /** @type {number} - Width of the blobmaster sprite in pixels */
   width = 64;
+  /** @type {number} - Vertical position */
   y = 67;
+  /** @type {number} - Health points */
   health = 160;
+  /** @type {boolean} - Whether currently in hurt state */
   isHurt = false;
+  /** @type {boolean} - Whether in dead state */
   isDead = false;
+  /** @type {string[]} - Currently active animation sequence */
   currentSequence = this.sequence_idle;
+  /** @type {number} - Movement direction (1 or -1) */
   walkDirection = 1;
+  /** @type {number} - Current X position tracker */
   blobmasterX = 1;
+  /** @type {number} - Base movement speed */
   speed = 50;
 
+  /** @type {AudioContext} - Web Audio API context for spatial audio */
   audioContext = new AudioContext();
+  /** @type {GainNode} - Controls audio volume based on distance */
   gainNode = this.audioContext.createGain();
+  /** @type {StereoPannerNode} - Controls left/right audio panning */
   pannerNode = this.audioContext.createStereoPanner();
 
+  /**
+   * Creates a new Blobmaster instance with initialized audio and animations.
+   * Sets up spatial audio system and starts animation/attack cycles.
+   */
   constructor() {
     super().loadImage("./img/enemies/blobmaster/blobmaster1.png");
     this.loadImages(this.sequence_idle);
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dying);
-
     this.x = Math.round(1000 + Math.random() * 150);
 
+    // Initialize spatial audio system
     this.blob_bounce_sound = new Audio("./audio/bounce3.wav");
     const track = this.audioContext.createMediaElementSource(this.blob_bounce_sound);
     track.connect(this.pannerNode);
@@ -37,6 +67,10 @@ class Blobmaster extends MovableObject {
     this.checkBallThrow();
   }
 
+  /**
+   * Manages ball throwing attacks with cooldown.
+   * Creates new Ball instances targeting the character.
+   */
   checkBallThrow() {
     let ballCooldown = false;
     setStoppableInterval(() => {
@@ -53,12 +87,19 @@ class Blobmaster extends MovableObject {
     }, 10);
   }
 
+  /**
+   * Removes active balls from the world after a delay.
+   */
   killBall() {
     setTimeout(() => {
       this.world.ball = [];
     }, 4000);
   }
 
+  /**
+   * Retrieves the character's X position from the world.
+   * @returns {number} The character's X position or 0 if not found
+   */
   getCharacterX() {
     if (this.world && this.world.character) {
       return this.world.character.x;
@@ -66,11 +107,14 @@ class Blobmaster extends MovableObject {
     return 0;
   }
 
+  /**
+   * Updates spatial audio parameters based on distance from character.
+   * Adjusts volume and stereo panning based on relative position.
+   */
   updateAudio() {
     const characterX = this.getCharacterX();
     const distance = Math.abs(this.x - characterX);
     const maxDistance = 300;
-
     let volume = 1 - distance / maxDistance;
     volume = Math.max(0, Math.min(1, volume));
     this.gainNode.gain.value = volume;
@@ -82,6 +126,10 @@ class Blobmaster extends MovableObject {
     this.pannerNode.pan.value = panValue;
   }
 
+  /**
+   * Handles main animation loop and behavior cycles.
+   * Manages movement, death checks, animation sequences, and audio playback.
+   */
   animate() {
     this.move(1000 / this.speed);
     setStoppableInterval(() => {
@@ -89,6 +137,7 @@ class Blobmaster extends MovableObject {
         this.rushAttack();
       }
     }, 2000);
+
     setStoppableInterval(() => {
       this.blobmasterX = this.x;
       this.checkIfDead();
@@ -106,11 +155,13 @@ class Blobmaster extends MovableObject {
           this.blob_bounce_sound.play();
         }
       }
-
       this.currentImage++;
     }, 100);
   }
 
+  /**
+   * Updates the current animation sequence based on state (hurt/dead/idle).
+   */
   updateCurrentAnimationSequence() {
     if (this.isHurt) {
       this.currentSequence = this.sequence_hurt;
@@ -121,6 +172,9 @@ class Blobmaster extends MovableObject {
     }
   }
 
+  /**
+   * Checks if health is low enough to trigger death state.
+   */
   checkIfDead() {
     if (this.health < 10) {
       this.isHurt = false;
@@ -128,8 +182,14 @@ class Blobmaster extends MovableObject {
     }
   }
 
+  /**
+   * Performs a rush attack towards the character.
+   * Includes acceleration and deceleration phases.
+   * Will not execute if already rushing or dead.
+   */
   rushAttack() {
     if (this.isRushing || this.health <= 10) return;
+
     this.isRushing = true;
     let speed = 0;
     const maxSpeed = 9;

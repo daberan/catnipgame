@@ -1,12 +1,60 @@
+/**
+ * @typedef {Object} Keyboard
+ * @property {boolean} UP - State of up arrow or 'w' key
+ * @property {boolean} DOWN - State of down arrow key
+ * @property {boolean} LEFT - State of left arrow or 'a' key
+ * @property {boolean} RIGHT - State of right arrow or 'd' key
+ * @property {boolean} SPACE - State of spacebar
+ * @property {boolean} P - State of 'p' key
+ */
+
+/**
+ * The main game canvas element.
+ * @type {HTMLCanvasElement}
+ */
 let canvas;
+
+/**
+ * The main World instance that manages game state and rendering.
+ * @type {World}
+ */
 let world;
+
+/**
+ * The start screen instance shown before game begins.
+ * @type {StartScreen}
+ */
 let startScreen;
+
+/**
+ * The game over screen instance shown when player dies.
+ * @type {GameOverScreen}
+ */
 let gameOverScreen;
+
+/**
+ * Keyboard instance tracking the state of player input keys.
+ * @type {Keyboard}
+ */
 let keyboard = new Keyboard();
+
+/**
+ * Flag to enable/disable collision frame visualization for debugging.
+ * @type {boolean}
+ */
 let enableCollisionFrames = false;
+
+/**
+ * Flag indicating whether the game has been started.
+ * @type {boolean}
+ */
 let gameStarted = false;
 
-function init() {
+/**
+ * Initializes the game by setting up the canvas and creating the start screen.
+ * This function should be called when the page loads.
+ */
+function initGame() {
   canvas = document.getElementById("canvasGame");
   canvas.width = 320;
   canvas.height = 180;
@@ -14,28 +62,29 @@ function init() {
   setTimeout(() => {
     startScreen = new StartScreen(canvas);
   }, 100);
-
-  // Add touch event listeners for mobile
-  canvas.addEventListener("touchstart", (event) => {
-    if (!gameStarted) return;
-    event.preventDefault(); // Prevent default touch behavior
-    keyboard.UP = true;
-  });
-
-  canvas.addEventListener("touchend", (event) => {
-    if (!gameStarted) return;
-    event.preventDefault(); // Prevent default touch behavior
-    keyboard.UP = false;
-  });
 }
 
+/**
+ * Initializes the main game world when player starts the game.
+ * Creates a new World instance and checks if running on mobile device.
+ * Only initializes once - subsequent calls are ignored.
+ */
 function initializeGame() {
   if (!gameStarted) {
     gameStarted = true;
     world = new World(canvas, keyboard);
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) {
+      world.isOnMobile = true;
+    }
   }
 }
 
+// Add event listeners for keyboard input
+/**
+ * Keydown event listener that updates keyboard state when keys are pressed.
+ * Only processes events if game has started.
+ * @param {KeyboardEvent} event - The keyboard event
+ */
 document.addEventListener("keydown", (event) => {
   if (!gameStarted) return;
 
@@ -59,6 +108,11 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+/**
+ * Keyup event listener that updates keyboard state when keys are released.
+ * Only processes events if game has started.
+ * @param {KeyboardEvent} event - The keyboard event
+ */
 document.addEventListener("keyup", (event) => {
   if (!gameStarted) return;
 
@@ -82,5 +136,6 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
+// Export functions to window object for external access
 window.initializeGame = initializeGame;
-window.init = init;
+window.initGame = initGame;

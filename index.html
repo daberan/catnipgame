@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/@rive-app/canvas"></script>
     <script src="./js/utility.js"></script>
     <script src="./js/backgrounds.js"></script>
     <script src="./models/movable-object.class.js"></script>
@@ -25,18 +26,49 @@
     <script src="./models/sound_control.class.js"></script>
     <script src="./models/gameover.class.js"></script>
     <script src="./models/winscreen.class.js"></script>
-
+    <script src="./models/mobile_controls.class.js"></script>
     <script src="./js/game.js"></script>
-
+    <link rel="icon" type="image/x-icon" href="./img/landing/favicon.png" />
     <title>Catnip</title>
   </head>
-  <body onload="init()">
-    <div class="case">
-      <div class="frame">
-        <div class="screen">
-          <canvas id="canvasGame" width="720" height="480"> </canvas>
+  <body onload="onLoadAnimations()">
+    <div class="mainWrapper">
+      <div class="contentWrapper">
+        <nav>
+          <div class="navLogoWrapper">
+            <img class="navLogo" src="./img/landing/logo.png" alt="" />
+            <span class="navTitle">Catnip!</span>
+          </div>
+          <button class="buttonTop" onclick="openMouthMove(), initGame()">
+            <span class="buttonTextTop">Enter Game</span>
+          </button>
+        </nav>
+        <div class="textWrapper">
+          <div class="titleWrapper">
+            <span class="title1">It's all about </span>
+            <span class="title2">Catnip!</span>
+          </div>
+          <p class="paragraph">Enjoy playing the most boring game in the history of gaming.</p>
+        </div>
+        <button class="button" id="button" onclick="openMouthMove(), initGame()">
+          <span class="buttonText">Enter Game</span>
+        </button>
+      </div>
+      <canvas class="canvasCat" id="canvasCat"></canvas>
+      <div class="gameWrapper">
+        <div class="horizontalError">This game requires landscape orientation</div>
+        <div class="case">
+          <div class="frame">
+            <div class="screen">
+              <canvas class="canvasGame" id="canvasGame" width="720" height="480"> </canvas>
+            </div>
+          </div>
         </div>
       </div>
+      <img class="tongue" src="./img/landing/tongue2.svg" alt="tongue" />
+      <a class="imprintLink" href="impressum.html">Imprint</a>
     </div>
+    <script src="./js/pageAnimations.js"></script>
+    <script src="./js/rive.js"></script>
   </body>
 </html>

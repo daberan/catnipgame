@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/@rive-app/canvas"></script>
+    <script src="./js/utility.js"></script>
+    <script src="./js/backgrounds.js"></script>
+    <script src="./models/movable-object.class.js"></script>
+    <script src="./models/character.class.js"></script>
+    <script src="./models/blob.class.js"></script>
+    <script src="./models/blobmaster.class.js"></script>
+    <script src="./models/cloud.class.js"></script>
+    <script src="./models/world.class.js"></script>
+    <script src="./models/background-object.class.js"></script>
+    <script src="./models/hud.class.js"></script>
+    <script src="./models/shit_counter.class.js"></script>
+    <script src="./models/shit.class.js"></script>
+    <script src="./models/collectible_shit.class.js"></script>
+    <script src="./models/ball.class.js"></script>
+    <script src="./models/keyboard.class.js"></script>
+    <script src="./models/level.class.js"></script>
+    <script src="./levels/level1.js"></script>
+    <script src="./models/startscreen.class.js"></script>
+    <script src="./models/sound_control.class.js"></script>
+    <script src="./models/gameover.class.js"></script>
+    <script src="./models/winscreen.class.js"></script>
+    <script src="./models/mobile_controls.class.js"></script>
+    <script src="./js/game.js"></script>
+    <link rel="icon" type="image/x-icon" href="./img/landing/favicon.png" />
+    <title>Catnip</title>
+  </head>
+  <body onload="onLoadAnimations()">
+    <div class="mainWrapper">
+      <div class="contentWrapper">
+        <nav>
+          <div class="navLogoWrapper">
+            <img class="navLogo" src="./img/landing/logo.png" alt="" />
+            <span class="navTitle">Catnip!</span>
+          </div>
+          <button class="buttonTop" onclick="openMouthMove(), initGame()">
+            <span class="buttonTextTop">Enter Game</span>
+          </button>
+          <a class="arrow" href="index.html">
+            <img src="./img/landing/arrow.png" alt="arrow back" />
+          </a>
+        </nav>
+        <div class="imprintWrapper">
+          <h1>Legal Notice (Imprint)</h1>
+          <br />
+
+          <h2>Information according to § 5 TMG</h2>
+          <p>
+            David Beran<br />
+            Büdingergasse 3<br />
+            1180, Vienna<br />
+            Austria
+          </p>
+          <br />
+
+          <h2>Contact</h2>
+          <p>
+            Phone: 06765205552<br />
+            Email: mail@davidberan.com<br />
+            Website: <a href="https://www.davidberan.com" target="_blank">www.davidberan.com</a>
+          </p>
+          <br />
+
+          <h2>Represented by</h2>
+          <p>David Beran</p>
+          <br />
+
+          <br />
+
+          <h2>Responsible for content according to § 55 Abs. 2 RStV</h2>
+          <p>David Beran<br /></p>
+          <br />
+
+          <h2>Dispute Resolution</h2>
+          <p>
+            The European Commission provides a platform for online dispute resolution (OS):<br />
+            <a href="https://ec.europa.eu/consumers/odr" target="_blank">https://ec.europa.eu/consumers/odr</a>
+          </p>
+          <p>We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board.</p>
+          <br />
+
+          <h2>Liability for Contents</h2>
+          <p>The contents of our pages have been created with great care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content. As a service provider, we are responsible for our own content on these pages according to § 7 Abs.1 TMG (German Telemedia Act). According to §§ 8 to 10 TMG, we are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.</p>
+          <br />
+
+          <h2>Liability for Links</h2>
+          <p>Our offer contains links to external websites of third parties, on whose contents we have no influence. Therefore, we cannot assume any liability for these external contents. The respective provider or operator of the pages is always responsible for the content of the linked pages. The linked pages were checked for possible legal violations at the time of linking. Illegal contents were not recognizable at the time of linking.</p>
+          <br />
+
+          <h2>Copyright</h2>
+          <p>The contents and works created by the site operators on these pages are subject to German copyright law. Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of the copyright law shall require the prior written consent of its respective author or creator. Downloads and copies of these pages are only permitted for private, non-commercial use.</p>
+          <br />
+
+          <p><em>Last updated: 18.01.2025</em></p>
+        </div>
+      </div>
+
+      <!-- <canvas class="canvasCat" id="canvasCat"></canvas> -->
+      <div class="gameWrapper">
+        <div class="horizontalError">This game requires landscape orientation</div>
+        <div class="case">
+          <div class="frame">
+            <div class="screen">
+              <canvas class="canvasGame" id="canvasGame" width="720" height="480"> </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <img class="tongue" src="./img/landing/tongue2.svg" alt="tongue" />
+    </div>
+    <script src="./js/pageAnimations.js"></script>
+    <script src="./js/rive.js"></script>
+  </body>
+</html>

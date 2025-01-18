@@ -1,25 +1,45 @@
+/**
+ * Represents the playable character in the game.
+ * Handles movement, animations, combat, and projectile throwing.
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
+  /** @type {string[]} - Paths for idle animation frames */
   sequence_idle = ["./img/character/idle/character_idle1.png", "./img/character/idle/character_idle2.png", "./img/character/idle/character_idle3.png", "./img/character/idle/character_idle4.png", "./img/character/idle/character_idle5.png", "./img/character/idle/character_idle6.png", "./img/character/idle/character_idle7.png"];
+  /** @type {string[]} - Paths for right rolling animation frames */
   sequence_rolling_right = ["./img/character/rolling/character_rolling1.png", "./img/character/rolling/character_rolling2.png", "./img/character/rolling/character_rolling3.png", "./img/character/rolling/character_rolling4.png", "./img/character/rolling/character_rolling5.png", "./img/character/rolling/character_rolling6.png", "./img/character/rolling/character_rolling7.png", "./img/character/rolling/character_rolling8.png"];
+  /** @type {string[]} - Paths for left rolling animation frames */
   sequence_rolling_left = ["./img/character/rolling/character_rolling1.png", "./img/character/rolling/character_rolling8.png", "./img/character/rolling/character_rolling7.png", "./img/character/rolling/character_rolling6.png", "./img/character/rolling/character_rolling5.png", "./img/character/rolling/character_rolling4.png", "./img/character/rolling/character_rolling3.png", "./img/character/rolling/character_rolling2.png"];
+  /** @type {string[]} - Paths for hurt animation frames */
   sequence_hurt = ["./img/character/hurt/character_hurt1.png", "./img/character/hurt/character_hurt2.png"];
+  /** @type {string[]} - Paths for death animation frames */
   sequence_dead = ["./img/character/dead/character_dead1.png", "./img/character/dead/character_dead2.png"];
+  /** @type {number} - Current animation frame index */
   currentImage = 0;
+  /** @type {string[]} - Currently active animation sequence */
   currentSequence = this.sequence_idle;
+  /** @type {World} - Reference to the game world */
   world;
+  /** @type {number} - Vertical position */
   y = 0;
+  /** @type {boolean} - Whether character is currently jumping */
   isJumping = this.isJumping;
+  /** @type {boolean} - Whether character is hurt */
   isHurt = false;
+  /** @type {boolean} - Whether character is dead */
   isDead = false;
-  character_jump_sound = new Audio("./audio/character_jump.mp3");
-  character_hurt_sound = new Audio("./audio/hurt.wav");
-  character_enemyJump_sound = new Audio("./audio/enemyJump3.wav");
-
+  /** @type {number} - Character's health points */
   characterEnergy = 100;
+  /** @type {number} - Base X position when on ground */
   characterGroundX = 102;
+  /** @type {number} - Current projectile ammunition count */
   shitAmmo = 3;
+  /** @type {number} - Last movement direction (1 for right, -1 for left) */
   lastDirection = 1;
 
+  /**
+   * Initializes the character with default animation, gravity, and position.
+   */
   constructor() {
     super().loadImage("./img/character/idle/character_idle1.png");
     this.loadImages(this.sequence_idle);
@@ -28,8 +48,12 @@ class Character extends MovableObject {
     this.loadImages(this.sequence_hurt);
     this.loadImages(this.sequence_dead);
     this.applyGravity(this.characterGroundX);
+    this.moveToStart();
   }
 
+  /**
+   * Sets up character behaviors and initial state.
+   */
   initializeCharacter() {
     this.animate();
     this.walkRight();
@@ -38,6 +62,9 @@ class Character extends MovableObject {
     this.world.shitCounter.setShitCounterImage(this.shitAmmo);
   }
 
+  /**
+   * Initializes all animation handlers.
+   */
   animate() {
     this.animationSequencePicker();
     this.handleJumpAnimation();
@@ -47,14 +74,20 @@ class Character extends MovableObject {
     this.handleDyingAnimation();
   }
 
+  /**
+   * Handles jump input and jump animation.
+   */
   handleJumpAnimation() {
     setStoppableInterval(() => {
       if (this.world.keyboard.UP && !this.isAboveGround() && !this.world.character.isDead) {
-        this.jump(this.character_jump_sound);
+        this.jump(this.world.soundControl.character_jump_sound);
       }
-    }, 10);
+    }, 50);
   }
 
+  /**
+   * Manages idle animation sequence.
+   */
   handleIdleAnimation() {
     setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_idle) {
@@ -66,6 +99,9 @@ class Character extends MovableObject {
     }, 100);
   }
 
+  /**
+   * Manages rolling animation sequences.
+   */
   handleRollingAnimation() {
     setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_rolling_left || this.currentSequence === this.sequence_rolling_right) {
@@ -77,6 +113,20 @@ class Character extends MovableObject {
     }, 50);
   }
 
+  /**
+   * Prevents character from moving off screen left.
+   */
+  moveToStart() {
+    setStoppableInterval(() => {
+      if (this.x < 0) {
+        this.x = 0;
+      }
+    }, 100);
+  }
+
+  /**
+   * Manages hurt animation sequence.
+   */
   handleHurtAnimation() {
     setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_hurt) {
@@ -88,6 +138,9 @@ class Character extends MovableObject {
     }, 50);
   }
 
+  /**
+   * Manages death animation sequence.
+   */
   handleDyingAnimation() {
     setStoppableInterval(() => {
       if (this.currentSequence === this.sequence_dead) {
@@ -99,6 +152,9 @@ class Character extends MovableObject {
     }, 50);
   }
 
+  /**
+   * Handles right movement and camera position.
+   */
   walkRight() {
     setStoppableInterval(() => {
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.character.isDead) {
@@ -108,6 +164,9 @@ class Character extends MovableObject {
     }, 8);
   }
 
+  /**
+   * Handles left movement and camera position.
+   */
   walkLeft() {
     setStoppableInterval(() => {
       if (this.world.keyboard.LEFT && this.x > 0 && !this.world.character.isDead) {
@@ -117,6 +176,9 @@ class Character extends MovableObject {
     }, 8);
   }
 
+  /**
+   * Selects appropriate animation sequence based on character state.
+   */
   animationSequencePicker() {
     setStoppableInterval(() => {
       if (this.world.keyboard.LEFT && !this.isHurt && !this.isDead) {
@@ -130,9 +192,12 @@ class Character extends MovableObject {
       } else {
         this.currentSequence = this.sequence_dead;
       }
-    }, 10);
+    }, 25);
   }
 
+  /**
+   * Manages projectile throwing mechanics and cooldown.
+   */
   checkShitThrow() {
     let shitCooldown = false;
     setStoppableInterval(() => {
@@ -140,10 +205,7 @@ class Character extends MovableObject {
         let poop = new Shit(this.x, this.y, this.checkCharacterDirection());
         this.world.shit.push(poop);
         this.shitAmmo--;
-        if (!this.world.soundControl.isMuted) {
-          new Audio("./audio/throw.wav").play();
-        }
-
+        this.world.soundControl.playThrowSound();
         this.world.shitCounter.setShitCounterImage(this.shitAmmo);
 
         shitCooldown = true;
@@ -151,9 +213,13 @@ class Character extends MovableObject {
           shitCooldown = false;
         }, 500);
       }
-    }, 10);
+    }, 25);
   }
 
+  /**
+   * Determines character's facing direction.
+   * @returns {number} Direction multiplier (1 for right, -1 for left)
+   */
   checkCharacterDirection() {
     if (this.world.keyboard.RIGHT) {
       this.lastDirection = 1;
@@ -163,45 +229,47 @@ class Character extends MovableObject {
     return this.lastDirection;
   }
 
+  /**
+   * Handles collectible pickup.
+   */
   collectShit() {
     this.shitAmmo++;
-    if (!this.world.soundControl.isMuted) {
-      new Audio("./audio/coin.wav").play();
-    }
-
+    this.world.soundControl.playShitSound();
     this.world.shitCounter.setShitCounterImage(this.shitAmmo);
   }
 
+  /**
+   * Processes character taking damage.
+   * @param {number} speed - Knockback speed
+   */
   handleHit(speed) {
     this.jump();
     this.reduceEnergy();
     this.world.hud.setHealthBarImage(this.characterEnergy);
-    if (!this.world.soundControl.isMuted) {
-      this.character_hurt_sound.play();
-    }
-
+    this.world.soundControl.playCharacterHurtSound();
     this.isHurt = true;
-
     if (this.characterEnergy <= 0) {
       this.die();
     }
-
     setTimeout(() => {
       this.isHurt = false;
     }, 750);
-
     setTimeout(() => {
       this.accelerateOnX(speed);
     }, 50);
   }
 
+  /**
+   * Reduces character's health points.
+   */
   reduceEnergy() {
     this.characterEnergy -= 10;
   }
 
+  /**
+   * Sets character's death state.
+   */
   die() {
-    console.log("Character died"); // Debug log
     this.isDead = true;
-    // restartGame();
   }
 }

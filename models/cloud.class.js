@@ -1,7 +1,26 @@
+/**
+ * Represents a cloud object in the game that moves across the screen.
+ * Randomly selects from different cloud types with varying properties.
+ * @extends MovableObject
+ */
 class Cloud extends MovableObject {
+  /**
+   * Creates a new Cloud instance with randomized properties.
+   * Selects random cloud type and initializes position and movement.
+   */
   constructor() {
     super();
 
+    /**
+     * @type {Array<{
+     *   image: string,
+     *   width: number,
+     *   height: number,
+     *   speedMin: number,
+     *   speedMax: number,
+     *   yPosition: number
+     * }>} - Available cloud configurations
+     */
     this.cloudTypes = [
       {
         image: "./img/environment/clouds/cloud1.png",
@@ -51,6 +70,10 @@ class Cloud extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the cloud's movement animation.
+   * Uses the cloud's randomly determined speed for movement timing.
+   */
   animate() {
     this.move(1000 / this.speed);
   }
