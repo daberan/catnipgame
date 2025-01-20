@@ -44,13 +44,10 @@ class Ball extends MovableObject {
   followTarget() {
     setStoppableInterval(() => {
       if (this.target && !this.world?.blobmaster?.isDead) {
-        // Calculate direction vector to target
         const dx = this.target.x + this.target.width / 2 - this.x;
         const dy = this.target.y + this.target.height / 2 - this.y;
-        // Normalize the vector
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance > 0) {
-          // Move towards target at constant speed
           this.x += Math.round((dx / distance) * this.homingSpeed);
           this.y += Math.round((dy / distance) * this.homingSpeed);
         }

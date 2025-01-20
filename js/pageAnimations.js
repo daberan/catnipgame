@@ -47,7 +47,6 @@ function openMouthMove() {
  */
 function checkOrientation() {
   const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-  console.log(isLandscape ? "Landscape" : "Portrait");
   if (isLandscape) {
     document.querySelector(".horizontalError").style.display = "none";
   } else {
@@ -55,10 +54,14 @@ function checkOrientation() {
   }
 }
 
-// Initialize orientation check on load
+/**
+ * Initialize orientation check on load
+ */
 checkOrientation();
 
-// Add listener for orientation changes
+/**
+ * Add listener for orientation changes
+ */
 window.matchMedia("(orientation: landscape)").addEventListener("change", (e) => {
   checkOrientation();
 });

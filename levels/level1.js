@@ -35,15 +35,11 @@ function getNewEnemies() {
  * @type {Level}
  */
 const level1 = new Level(
-  // Enemy array - single Blob instance
   getNewEnemies(),
 
-  // Cloud array - 8 cloud instances for atmospheric effect
   [new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud(), new Cloud()],
 
-  // Background objects array - organized in screens from -1 to 5
   [
-    // Screen -1 (-320px to 0px) - Initial buffer screen
     new BackgroundObject("./img/environment/background/sky.png", -320, 0),
     new BackgroundObject("./img/environment/background/background-clouds2.png", -320, 20),
     new BackgroundObject("./img/environment/background/background-clouds1.png", -320, 20),
@@ -53,7 +49,6 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground_newFirst.png", -320, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", -320, 25),
 
-    // Screen 0 (0px to 320px) - Starting screen
     new BackgroundObject("./img/environment/background/sky.png", 0, 0),
     new BackgroundObject("./img/environment/background/background-clouds2.png", 0, 20),
     new BackgroundObject("./img/environment/background/background-clouds1.png", 0, 20),
@@ -63,7 +58,6 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground_newStart.png", 0, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", 0, 25),
 
-    // Screen 1 (320px to 640px)
     new BackgroundObject("./img/environment/background/sky.png", 320, 0),
     new BackgroundObject("./img/environment/background/background-clouds2.png", 320, 20),
     new BackgroundObject("./img/environment/background/background-clouds1.png", 320, 20),
@@ -73,7 +67,6 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground_new.png", 320, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", 320, 25),
 
-    // Screen 2 (640px to 960px) - Skull section
     new BackgroundObject("./img/environment/background/sky.png", 320 * 2, 0),
     new BackgroundObject("./img/environment/background/background-clouds2.png", 320 * 2, 20),
     new BackgroundObject("./img/environment/background/background-clouds1.png", 320 * 2, 20),
@@ -83,7 +76,6 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground_newSkull.png", 320 * 2, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", 320 * 2, 25),
 
-    // Screen 3 (960px to 1280px)
     new BackgroundObject("./img/environment/background/sky.png", 320 * 3, 0),
     new BackgroundObject("./img/environment/background/background-clouds2.png", 320 * 3, 20),
     new BackgroundObject("./img/environment/background/background-clouds1.png", 320 * 3, 20),
@@ -93,7 +85,6 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground_new.png", 320 * 3, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", 320 * 3, 25),
 
-    // Screen 4 (1280px to 1600px)
     new BackgroundObject("./img/environment/background/sky.png", 320 * 4, 0),
     new BackgroundObject("./img/environment/background/background-clouds2.png", 320 * 4, 20),
     new BackgroundObject("./img/environment/background/background-clouds1.png", 320 * 4, 20),
@@ -103,7 +94,6 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground_new.png", 320 * 4, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", 320 * 4, 25),
 
-    // Screen 5 (1600px to 1920px)
     new BackgroundObject("./img/environment/background/sky.png", 320 * 5, 0),
     new BackgroundObject("./img/environment/background/background-clouds2.png", 320 * 5, 20),
     new BackgroundObject("./img/environment/background/background-clouds1.png", 320 * 5, 20),
@@ -113,6 +103,5 @@ const level1 = new Level(
     new BackgroundObject("./img/environment/background/ground_new.png", 320 * 5, 20),
     new BackgroundObject("./img/environment/background/foreground2.png", 320 * 5, 25),
   ],
-  // HUD array - single HUD instance for game stats
   [new Hud()]
 );

@@ -79,7 +79,6 @@ function initializeGame() {
   }
 }
 
-// Add event listeners for keyboard input
 /**
  * Keydown event listener that updates keyboard state when keys are pressed.
  * Only processes events if game has started.
@@ -136,6 +135,5 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
-// Export functions to window object for external access
 window.initializeGame = initializeGame;
 window.initGame = initGame;

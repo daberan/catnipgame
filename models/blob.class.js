@@ -91,7 +91,7 @@ class Blob extends MovableObject {
    */
   moveBlob(speed) {
     setStoppableInterval(() => {
-      if (!this.isDead && gameStarted) {
+      if (!this.isDead) {
         const characterX = this.getCharacterX();
         const newDirection = characterX > this.x ? 1 : -1;
         if (this.canTurn && newDirection !== this.currentDirection) {

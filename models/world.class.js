@@ -59,7 +59,6 @@ class World {
     this.winscreen = new Winscreen(canvas, this);
     this.mobileControls = new MobileControls();
     this.mobileControls.initialize(this);
-
     this.spawnCollectibleShit();
     this.draw();
     this.setWorld();
@@ -87,7 +86,6 @@ class World {
    */
   draw() {
     this.handleBackgroundDrawing(0);
-
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.collectibleShit);
     this.addToMap(this.character);
@@ -96,25 +94,37 @@ class World {
     this.addObjectsToMap(this.shit);
     this.addObjectsToMap(this.ball);
     this.ctx.translate(-this.camera_x, 0);
-    this.addToMap(this.hud);
-    this.addToMap(this.soundControl);
-    this.addToMap(this.shitCounter);
-
-    if (this.character.isDead) {
-      this.addToMap(this.gameOver);
-    }
-
-    if (this.blobmaster && this.blobmaster.isDead) {
-      this.addToMap(this.winscreen);
-    }
-
-    if (this.isOnMobile) {
-      this.addToMap(this.mobileControls);
-    }
-
+    this.addOverlaysToMap();
     requestAnimationFrame(() => {
       this.draw();
     });
+  }
+
+  addOverlaysToMap() {
+    this.addToMap(this.hud);
+    this.addToMap(this.soundControl);
+    this.addToMap(this.shitCounter);
+    this.addGameOverScreenToMap();
+    this.addWinScreenToMap();
+    this.addMobileControls();
+  }
+
+  addGameOverScreenToMap() {
+    if (this.character.isDead) {
+      this.addToMap(this.gameOver);
+    }
+  }
+
+  addWinScreenToMap() {
+    if (this.blobmaster && this.blobmaster.isDead) {
+      this.addToMap(this.winscreen);
+    }
+  }
+
+  addMobileControls() {
+    if (this.isOnMobile) {
+      this.addToMap(this.mobileControls);
+    }
   }
 
   /**
@@ -222,7 +232,7 @@ class World {
         this.blobmaster.world = this;
         this.level.enemies.push(this.blobmaster);
       }
-    }, 1000);
+    }, 2000);
   }
 
   /**

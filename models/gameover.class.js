@@ -1,91 +1,130 @@
 /**
- * Represents the game over screen that appears when the player dies.
- * Handles display and restart functionality for both mouse and touch inputs.
+ * Handles game over screen display and interactions.
  */
 class GameOver {
+  /** @type {Object} Default configuration for GameOver screen */
+  static DEFAULT_CONFIG = {
+    width: 320,
+    height: 180,
+    clickableWidth: 160,
+    clickableHeight: 50,
+    homeButtonSize: 30,
+    homeButtonPadding: 0,
+    gameOverImagePath: "./img/gameover/gameover.png",
+  };
+
   /**
-   * Creates a new GameOver instance.
-   * @param {HTMLCanvasElement} canvas - The game's canvas element
-   * @param {World} world - Reference to the game world
+   * @param {HTMLCanvasElement} canvas
+   * @param {World} world
    */
   constructor(canvas, world) {
-    /** @type {HTMLCanvasElement} - Canvas element reference */
     this.canvas = canvas;
-    /** @type {World} - Game world reference */
     this.world = world;
-    /** @type {number} - Screen width */
-    this.width = 320;
-    /** @type {number} - Screen height */
-    this.height = 180;
-    /** @type {number} - X position */
-    this.x = 0;
-    /** @type {number} - Y position */
-    this.y = 0;
-    /** @type {Object.<string, HTMLImageElement>} - Cached images */
-    this.imageCache = {};
-
-    /** @type {number} - Width of clickable restart area */
-    this.clickAreaWidth = this.width * 0.5;
-    /** @type {number} - Height of clickable restart area */
-    this.clickAreaHeight = 50;
-    /** @type {number} - X position of clickable area */
-    this.clickAreaX = (this.width - this.clickAreaWidth) / 2;
-    /** @type {number} - Y position of clickable area */
-    this.clickAreaY = (this.height - this.clickAreaHeight) / 2;
-
-    this.loadImage("./img/gameover/gameover.png");
-    this.addClickListener();
+    this.initializeProperties();
+    this.loadGameOverImage();
+    this.setupEventListeners();
   }
 
   /**
-   * Loads and caches the game over screen image.
-   * @param {string} path - Path to the image file
+   * Initializes all class properties with default configuration
    */
-  loadImage(path) {
+  initializeProperties() {
+    const config = GameOver.DEFAULT_CONFIG;
+    this.width = config.width;
+    this.height = config.height;
+    this.x = 0;
+    this.y = 0;
+    this.imageCache = {};
+    this.clickArea = {
+      width: config.clickableWidth,
+      height: config.clickableHeight,
+      x: (config.width - config.clickableWidth) / 2,
+      y: (config.height - config.clickableHeight) / 2,
+    };
+    this.homeButton = {
+      size: config.homeButtonSize,
+      padding: config.homeButtonPadding,
+    };
+  }
+
+  /**
+   * Loads and caches the game over screen image
+   */
+  loadGameOverImage() {
     const img = new Image();
-    img.src = path;
-    this.imageCache[path] = img;
+    img.src = GameOver.DEFAULT_CONFIG.gameOverImagePath;
+    this.imageCache[GameOver.DEFAULT_CONFIG.gameOverImagePath] = img;
     this.img = img;
   }
 
   /**
-   * Adds mouse and touch event listeners for restart functionality.
-   * Checks if click/touch is within restart button area.
+   * Sets up all event listeners
    */
-  addClickListener() {
-    this.canvas.addEventListener("click", (event) => {
-      if (!this.world.character.isDead) return;
+  setupEventListeners() {
+    this.canvas.addEventListener("mousemove", (e) => this.handleMouseMove(e));
+    this.canvas.addEventListener("click", (e) => this.handleInteraction(e));
+    this.canvas.addEventListener("touchstart", (e) => this.handleInteraction(e), { passive: false });
+  }
 
-      const rect = this.canvas.getBoundingClientRect();
-      const scaleX = this.canvas.width / rect.width;
-      const scaleY = this.canvas.height / rect.height;
+  /**
+   * Handles mouse movement for cursor changes
+   * @param {MouseEvent} event
+   */
+  handleMouseMove(event) {
+    if (!this.world.character.isDead) return;
 
-      const clickX = (event.clientX - rect.left) * scaleX;
-      const clickY = (event.clientY - rect.top) * scaleY;
+    const { x, y } = this.getScaledCoordinates(event);
+    this.canvas.style.cursor = this.isInHomeButtonArea(x, y) ? "pointer" : "default";
+  }
 
-      if (clickX >= this.clickAreaX && clickX <= this.clickAreaX + this.clickAreaWidth && clickY >= this.clickAreaY && clickY <= this.clickAreaY + this.clickAreaHeight) {
-        restartGame();
-      }
-    });
+  /**
+   * Handles both mouse clicks and touch events
+   * @param {MouseEvent|TouchEvent} event
+   */
+  handleInteraction(event) {
+    event.preventDefault();
+    if (!this.world.character.isDead) return;
+    const coords = event.type === "touchstart" ? this.getScaledCoordinates(event.touches[0]) : this.getScaledCoordinates(event);
+    if (this.isInHomeButtonArea(coords.x, coords.y)) {
+      location.reload();
+      return;
+    }
+    if (this.isInRestartArea(coords.x, coords.y)) {
+      restartGame();
+    }
+  }
 
-    this.canvas.addEventListener(
-      "touchstart",
-      (event) => {
-        event.preventDefault();
-        if (!this.world.character.isDead) return;
+  /**
+   * Converts screen coordinates to canvas coordinates
+   * @param {{clientX: number, clientY: number}} event
+   * @returns {{x: number, y: number}}
+   */
+  getScaledCoordinates(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+    return {
+      x: (event.clientX - rect.left) * scaleX,
+      y: (event.clientY - rect.top) * scaleY,
+    };
+  }
 
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @returns {boolean}
+   */
+  isInHomeButtonArea(x, y) {
+    const { padding, size } = this.homeButton;
+    return x >= padding && x <= padding + size && y >= padding && y <= padding + size;
+  }
 
-        const touchX = (event.touches[0].clientX - rect.left) * scaleX;
-        const touchY = (event.touches[0].clientY - rect.top) * scaleY;
-
-        if (touchX >= this.clickAreaX && touchX <= this.clickAreaX + this.clickAreaWidth && touchY >= this.clickAreaY && touchY <= this.clickAreaY + this.clickAreaHeight) {
-          restartGame();
-        }
-      },
-      { passive: false }
-    );
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @returns {boolean}
+   */
+  isInRestartArea(x, y) {
+    return x >= this.clickArea.x && x <= this.clickArea.x + this.clickArea.width && y >= this.clickArea.y && y <= this.clickArea.y + this.clickArea.height;
   }
 }

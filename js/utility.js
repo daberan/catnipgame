@@ -20,29 +20,6 @@ function setStoppableInterval(fn, time) {
 }
 
 /**
- * Stops all game processes including:
- * - Clears all active intervals
- * - Pauses and resets all game audio
- * - Closes any active enemy audio contexts
- *
- * Should be called before restarting or exiting the game.
- */
-function stopGame() {
-  clearIntervals();
-  if (world) {
-    world.soundControl.theme.pause();
-    world.soundControl.theme.currentTime = 0;
-    world.soundControl.bossTheme.pause();
-    world.soundControl.bossTheme.currentTime = 0;
-    world.level.enemies.forEach((enemy) => {
-      if (enemy.audioContext) {
-        enemy.audioContext.close();
-      }
-    });
-  }
-}
-
-/**
  * Clears all tracked intervals and resets the intervalIds array.
  * Used as part of game cleanup and reset process.
  */
@@ -74,7 +51,39 @@ function restartGame() {
   initializeGame();
 }
 
-// Export functions and variables to window object for external access
+/**
+ * Stops all game processes including:
+ * - Clears all active intervals
+ * - Pauses and resets all game audio
+ * - Closes any active enemy audio contexts
+ *
+ * Should be called before restarting or exiting the game.
+ */
+function stopGame() {
+  clearIntervals();
+  this.stopMusic();
+}
+
+/**
+ * Stops all music.
+ */
+
+function stopMusic() {
+  if (world) {
+    world.soundControl.theme.pause();
+    world.soundControl.theme.currentTime = 0;
+
+    world.soundControl.bossTheme.pause();
+    world.soundControl.bossTheme.currentTime = 0;
+
+    world.level.enemies.forEach((enemy) => {
+      if (enemy.audioContext) {
+        enemy.audioContext.close();
+      }
+    });
+  }
+}
+
 window.intervalIds = intervalIds;
 window.setStoppableInterval = setStoppableInterval;
 window.stopGame = stopGame;

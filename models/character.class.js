@@ -114,12 +114,15 @@ class Character extends MovableObject {
   }
 
   /**
-   * Prevents character from moving off screen left.
+   * Prevents character from moving off screen left and right.
    */
   moveToStart() {
     setStoppableInterval(() => {
       if (this.x < 0) {
         this.x = 0;
+      }
+      if (this.x > 865) {
+        this.x = 865;
       }
     }, 100);
   }

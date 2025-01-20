@@ -27,8 +27,6 @@ const r = new rive.Rive({
    */
   onLoad: () => {
     r.resizeDrawingSurfaceToCanvas();
-
-    // Initialize state machine inputs
     const inputs = r.stateMachineInputs("stateMachine");
     const xAxis = inputs.find((input) => input.name === "xAxis");
     const yAxis = inputs.find((input) => input.name === "yAxis");
@@ -53,8 +51,8 @@ const r = new rive.Rive({
      * Blink delay is randomized between minDelay and maxDelay.
      */
     function randomBlink() {
-      const minDelay = 500; // Minimum time between blinks (ms)
-      const maxDelay = 8000; // Maximum time between blinks (ms)
+      const minDelay = 500;
+      const maxDelay = 8000;
 
       /**
        * Recursive function to schedule the next blink animation
@@ -74,12 +72,12 @@ const r = new rive.Rive({
 
     randomBlink();
 
-    // Trigger blink animation on click
+    /**
+     * Trigger blink animation on click
+     */
     document.addEventListener("click", () => {
       blink.fire();
     });
-
-    // Set initial eye position to center
     xAxis.value = 50;
     yAxis.value = 50;
   },

@@ -24,7 +24,7 @@ class Blobmaster extends MovableObject {
   /** @type {number} - Vertical position */
   y = 67;
   /** @type {number} - Health points */
-  health = 160;
+  health = 100;
   /** @type {boolean} - Whether currently in hurt state */
   isHurt = false;
   /** @type {boolean} - Whether in dead state */
@@ -56,7 +56,6 @@ class Blobmaster extends MovableObject {
     this.loadImages(this.sequence_dying);
     this.x = Math.round(1000 + Math.random() * 150);
 
-    // Initialize spatial audio system
     this.blob_bounce_sound = new Audio("./audio/bounce3.wav");
     const track = this.audioContext.createMediaElementSource(this.blob_bounce_sound);
     track.connect(this.pannerNode);
@@ -116,7 +115,7 @@ class Blobmaster extends MovableObject {
     const distance = Math.abs(this.x - characterX);
     const maxDistance = 300;
     let volume = 1 - distance / maxDistance;
-    volume = Math.max(0, Math.min(1, volume));
+    volume = Math.max(0, Math.min(this.world.soundControl.soundVolume, volume));
     this.gainNode.gain.value = volume;
 
     const panMaxDistance = 200;

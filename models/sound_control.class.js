@@ -45,6 +45,8 @@ class Soundcontrol {
   blob_bounce_sound;
   /** @type {World} - Reference to game world */
   world;
+  /** @type {number} - Master Volume */
+  soundVolume = 0.1;
 
   /**
    * Initializes sound control with canvas and world references.
@@ -54,26 +56,28 @@ class Soundcontrol {
   constructor(canvas, world) {
     this.canvas = canvas;
     this.world = world;
+    this.getLocalMasterVolume();
     this.loadImage("./img/soundcontrol/unmuted.png");
     this.loadImages(this.imageSequence);
     this.addClickListener();
     this.addMouseMoveListener();
+
     this.initializeAudioFiles();
+    this.initVolume();
 
     this.theme.loop = true;
     this.bossTheme.loop = true;
+    this.initSoundIcon();
 
-    if (!this.isMuted) {
-      this.playTheme();
-    }
+    this.playTheme();
   }
 
   /**
    * Initializes all audio files used in the game.
    */
   initializeAudioFiles() {
-    this.theme = new Audio("./audio/Thunderbirds.wav");
-    this.bossTheme = new Audio("./audio/TheBloop.wav");
+    this.theme = new Audio("./audio/Thunderbirds.mp3");
+    this.bossTheme = new Audio("./audio/TheBloop.mp3");
     this.gameOverSound = new Audio("./audio/gameover.mp3");
     this.gameWinSound = new Audio("./audio/win.mp3");
     this.shitSound = new Audio("./audio/coin.wav");
@@ -88,70 +92,76 @@ class Soundcontrol {
    * Plays blob bounce sound if not muted.
    */
   playBlobBounceSound() {
-    if (!this.isMuted) this.blob_bounce_sound.play();
+    this.blob_bounce_sound.play();
   }
 
   /**
    * Plays character jump sound if not muted.
    */
   playCharacterJumpSound() {
-    if (!this.isMuted) this.character_jump_sound.play();
+    this.character_jump_sound.play();
   }
 
   /**
    * Plays character hurt sound if not muted.
    */
   playCharacterHurtSound() {
-    if (!this.isMuted) this.character_hurt_sound.play();
+    this.character_hurt_sound.play();
   }
 
   /**
    * Plays enemy jump sound if not muted.
    */
   playCharacterEnemyJumpSound() {
-    if (!this.isMuted) this.character_enemyJump_sound.play();
+    this.character_enemyJump_sound.play();
   }
 
   /**
    * Plays throw sound if not muted.
    */
   playThrowSound() {
-    if (!this.isMuted) this.throwSound.play();
+    this.throwSound.play();
   }
 
   /**
    * Plays collection sound if not muted.
    */
   playShitSound() {
-    if (!this.isMuted) this.shitSound.play();
+    this.shitSound.play();
   }
 
   /**
    * Plays background music if not muted.
    */
-  playTheme() {
-    if (!this.isMuted) this.theme.play();
+  async playTheme() {
+    try {
+      await this.theme.play();
+    } catch (error) {
+      if (error.name === "AbortError") {
+        return;
+      }
+    }
   }
 
   /**
    * Plays boss theme if not muted.
    */
   playBossTheme() {
-    if (!this.isMuted) this.bossTheme.play();
+    this.bossTheme.play();
   }
 
   /**
    * Plays game over sound if not muted.
    */
   playGameOverSound() {
-    if (!this.isMuted) this.gameOverSound.play();
+    this.gameOverSound.play();
   }
 
   /**
    * Plays victory sound if not muted.
    */
   playGameWinSound() {
-    if (!this.isMuted) this.gameWinSound.play();
+    this.gameWinSound.play();
   }
 
   /**
@@ -235,24 +245,45 @@ class Soundcontrol {
     this.canvas.addEventListener("touchstart", handleInteraction, { passive: false });
   }
 
+  initSoundIcon() {
+    this.getLocalMasterVolume();
+    const imagePath = this.isMuted ? "./img/soundcontrol/muted.png" : "./img/soundcontrol/unmuted.png";
+    this.img = this.imageCache[imagePath];
+  }
+
   /**
    * Toggles mute state and updates all audio volumes.
    */
   toggleSoundIcon() {
     this.isMuted = !this.isMuted;
+    this.saveLocalMasterVolume();
     const imagePath = this.isMuted ? "./img/soundcontrol/muted.png" : "./img/soundcontrol/unmuted.png";
     this.img = this.imageCache[imagePath];
+    this.initVolume();
+  }
+
+  initVolume() {
     if (this.world) {
-      this.theme.volume = this.isMuted ? 0 : 1;
-      this.bossTheme.volume = this.isMuted ? 0 : 1;
-      this.gameOverSound.volume = this.isMuted ? 0 : 1;
-      this.gameWinSound.volume = this.isMuted ? 0 : 1;
-      this.shitSound.volume = this.isMuted ? 0 : 1;
-      this.throwSound.volume = this.isMuted ? 0 : 1;
-      this.character_jump_sound.volume = this.isMuted ? 0 : 1;
-      this.character_hurt_sound.volume = this.isMuted ? 0 : 1;
-      this.character_enemyJump_sound.volume = this.isMuted ? 0 : 1;
-      this.blob_bounce_sound.volume = this.isMuted ? 0 : 1;
+      this.theme.volume = this.isMuted ? 0 : this.soundVolume;
+      this.bossTheme.volume = this.isMuted ? 0 : this.soundVolume;
+      this.gameOverSound.volume = this.isMuted ? 0 : this.soundVolume;
+      this.gameWinSound.volume = this.isMuted ? 0 : this.soundVolume;
+      this.shitSound.volume = this.isMuted ? 0 : this.soundVolume;
+      this.throwSound.volume = this.isMuted ? 0 : this.soundVolume;
+      this.character_jump_sound.volume = this.isMuted ? 0 : this.soundVolume;
+      this.character_hurt_sound.volume = this.isMuted ? 0 : this.soundVolume;
+      this.character_enemyJump_sound.volume = this.isMuted ? 0 : this.soundVolume;
+      this.blob_bounce_sound.volume = this.isMuted ? 0 : this.soundVolume;
+    }
+  }
+
+  saveLocalMasterVolume() {
+    localStorage.setItem("isMuted", this.isMuted);
+  }
+
+  getLocalMasterVolume() {
+    if (localStorage.getItem("isMuted") !== null) {
+      this.isMuted = localStorage.getItem("isMuted") === "true";
     }
   }
 }
